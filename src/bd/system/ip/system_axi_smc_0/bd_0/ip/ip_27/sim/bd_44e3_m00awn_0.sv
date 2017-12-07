@@ -48,7 +48,7 @@
 
 
 // IP VLNV: xilinx.com:ip:sc_node:1.0
-// IP Revision: 5
+// IP Revision: 6
 
 `timescale 1ns/1ps
 
@@ -73,8 +73,10 @@ module bd_44e3_m00awn_0 (
   m_axis_arb_tdata
 );
 
+(* X_INTERFACE_PARAMETER = "XIL_INTERFACENAME aclk, ASSOCIATED_BUSIF S_AXIS_ARB:M_AXIS_ARB:S_SC, ASSOCIATED_RESET s_sc_aresetn, ASSOCIATED_CLKEN s_sc_aclken, FREQ_HZ 100000000, PHASE 0.0, CLK_DOMAIN /clk_wiz_0_clk_out1" *)
 (* X_INTERFACE_INFO = "xilinx.com:signal:clock:1.0 aclk CLK" *)
 input wire s_sc_aclk;
+(* X_INTERFACE_PARAMETER = "XIL_INTERFACENAME aresetn, POLARITY ACTIVE_LOW" *)
 (* X_INTERFACE_INFO = "xilinx.com:signal:reset:1.0 aresetn RST" *)
 input wire s_sc_aresetn;
 (* X_INTERFACE_INFO = "xilinx.com:interface:sc:1.0 S_SC REQ" *)
@@ -86,9 +88,11 @@ input wire [1 : 0] s_sc_send;
 (* X_INTERFACE_INFO = "xilinx.com:interface:sc:1.0 S_SC RECV" *)
 output wire [1 : 0] s_sc_recv;
 (* X_INTERFACE_INFO = "xilinx.com:interface:sc:1.0 S_SC PAYLD" *)
-input wire [139 : 0] s_sc_payld;
+input wire [137 : 0] s_sc_payld;
+(* X_INTERFACE_PARAMETER = "XIL_INTERFACENAME m_sc_aclk, ASSOCIATED_BUSIF M_SC, ASSOCIATED_RESET m_sc_aresetn, ASSOCIATED_CLKEN m_sc_aclken, FREQ_HZ 81247969, PHASE 0, CLK_DOMAIN system_mig_7series_0_0_ui_clk" *)
 (* X_INTERFACE_INFO = "xilinx.com:signal:clock:1.0 m_sc_aclk CLK" *)
 input wire m_sc_aclk;
+(* X_INTERFACE_PARAMETER = "XIL_INTERFACENAME m_sc_aresetn, POLARITY ACTIVE_LOW" *)
 (* X_INTERFACE_INFO = "xilinx.com:signal:reset:1.0 m_sc_aresetn RST" *)
 input wire m_sc_aresetn;
 (* X_INTERFACE_INFO = "xilinx.com:interface:sc:1.0 M_SC RECV" *)
@@ -100,32 +104,33 @@ output wire [0 : 0] m_sc_req;
 (* X_INTERFACE_INFO = "xilinx.com:interface:sc:1.0 M_SC INFO" *)
 output wire [0 : 0] m_sc_info;
 (* X_INTERFACE_INFO = "xilinx.com:interface:sc:1.0 M_SC PAYLD" *)
-output wire [139 : 0] m_sc_payld;
+output wire [137 : 0] m_sc_payld;
 (* X_INTERFACE_INFO = "xilinx.com:interface:axis:1.0 M_AXIS_ARB TVALID" *)
 output wire m_axis_arb_tvalid;
 (* X_INTERFACE_INFO = "xilinx.com:interface:axis:1.0 M_AXIS_ARB TREADY" *)
 input wire m_axis_arb_tready;
+(* X_INTERFACE_PARAMETER = "XIL_INTERFACENAME M_AXIS_ARB, TDATA_NUM_BYTES 2, TDEST_WIDTH 0, TID_WIDTH 0, TUSER_WIDTH 0, HAS_TREADY 1, HAS_TSTRB 0, HAS_TKEEP 0, HAS_TLAST 0, FREQ_HZ 100000000, PHASE 0.0, CLK_DOMAIN /clk_wiz_0_clk_out1, LAYERED_METADATA undef" *)
 (* X_INTERFACE_INFO = "xilinx.com:interface:axis:1.0 M_AXIS_ARB TDATA" *)
 output wire [15 : 0] m_axis_arb_tdata;
 
-  sc_node_v1_0_5_top #(
+  sc_node_v1_0_6_top #(
     .C_FAMILY("spartan7"),
     .C_FIFO_IP(0),
     .C_DISABLE_IP(0),
     .C_FIFO_SIZE(5),
     .C_FIFO_TYPE(0),
     .C_ENABLE_PIPELINING(8'H01),
-    .C_SYNCHRONIZATION_STAGES(2),
+    .C_SYNCHRONIZATION_STAGES(3),
     .C_NUM_SI(2),
     .C_NUM_MI(1),
     .C_CHANNEL(3),
-    .C_PAYLD_WIDTH(140),
+    .C_PAYLD_WIDTH(138),
     .C_S_NUM_BYTES_ARRAY(64'H0000001000000010),
     .C_M_NUM_BYTES_ARRAY(32'H00000010),
     .C_USER_BITS_PER_BYTE(0),
     .C_ARBITER_MODE(1),
     .C_SC_ROUTE_WIDTH(1),
-    .C_ID_WIDTH(2),
+    .C_ID_WIDTH(1),
     .C_ADDR_WIDTH(32),
     .C_USER_WIDTH(0),
     .C_MAX_PAYLD_BYTES(16),

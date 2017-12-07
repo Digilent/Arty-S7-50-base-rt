@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
-<bd:repository xmlns:bd="http://www.xilinx.com/bd" bd:BoundaryCRC="0xE60F33E142527F33" bd:bdsource="SBD" bd:device="xc7s50csga324-1" bd:isScoped="true" bd:isValidated="true" bd:synthFlowMode="None" bd:tool_version="2017.2.1" bd:top="bd_44e3" bd:version="1.00.a">
+<bd:repository xmlns:bd="http://www.xilinx.com/bd" bd:BoundaryCRC="0xE60F33E142527F33" bd:bdsource="SBD" bd:device="xc7s50csga324-1" bd:isScoped="true" bd:isValidated="true" bd:synthFlowMode="None" bd:tool_version="2017.3" bd:top="bd_44e3" bd:version="1.00.a">
 
   <spirit:component xmlns:spirit="http://www.spiritconsortium.org/XMLSchema/SPIRIT/1685-2009">
     <spirit:vendor>xilinx.com</spirit:vendor>
@@ -1089,11 +1089,11 @@
           <spirit:configurableElementValue spirit:referenceId="bd:xciName">bd_44e3_s00a2s_0</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="READ_WRITE_MODE">READ_WRITE</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="AXI_ADDR_WIDTH">32</spirit:configurableElementValue>
-          <spirit:configurableElementValue spirit:referenceId="AXI_ID_WIDTH">2</spirit:configurableElementValue>
+          <spirit:configurableElementValue spirit:referenceId="AXI_ID_WIDTH">1</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="AXI_RDATA_WIDTH">32</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="AXI_WDATA_WIDTH">32</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="SC_ADDR_WIDTH">32</spirit:configurableElementValue>
-          <spirit:configurableElementValue spirit:referenceId="SC_ID_WIDTH">2</spirit:configurableElementValue>
+          <spirit:configurableElementValue spirit:referenceId="SC_ID_WIDTH">1</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="SC_RDATA_WIDTH">128</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="SC_WDATA_WIDTH">128</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="SC_ARUSER_WIDTH">0</spirit:configurableElementValue>
@@ -1120,11 +1120,11 @@
           <spirit:configurableElementValue spirit:referenceId="bd:xciName">bd_44e3_s01a2s_0</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="READ_WRITE_MODE">READ_ONLY</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="AXI_ADDR_WIDTH">32</spirit:configurableElementValue>
-          <spirit:configurableElementValue spirit:referenceId="AXI_ID_WIDTH">2</spirit:configurableElementValue>
+          <spirit:configurableElementValue spirit:referenceId="AXI_ID_WIDTH">1</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="AXI_RDATA_WIDTH">32</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="AXI_WDATA_WIDTH">32</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="SC_ADDR_WIDTH">32</spirit:configurableElementValue>
-          <spirit:configurableElementValue spirit:referenceId="SC_ID_WIDTH">2</spirit:configurableElementValue>
+          <spirit:configurableElementValue spirit:referenceId="SC_ID_WIDTH">1</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="SC_RDATA_WIDTH">128</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="SC_WDATA_WIDTH">128</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="SC_ARUSER_WIDTH">0</spirit:configurableElementValue>
@@ -1147,11 +1147,11 @@
           <spirit:configurableElementValue spirit:referenceId="bd:xciName">bd_44e3_m00s2a_0</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="READ_WRITE_MODE">READ_WRITE</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="AXI_ADDR_WIDTH">28</spirit:configurableElementValue>
-          <spirit:configurableElementValue spirit:referenceId="AXI_ID_WIDTH">2</spirit:configurableElementValue>
+          <spirit:configurableElementValue spirit:referenceId="AXI_ID_WIDTH">1</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="AXI_RDATA_WIDTH">128</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="AXI_WDATA_WIDTH">128</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="SC_ADDR_WIDTH">32</spirit:configurableElementValue>
-          <spirit:configurableElementValue spirit:referenceId="SC_ID_WIDTH">2</spirit:configurableElementValue>
+          <spirit:configurableElementValue spirit:referenceId="SC_ID_WIDTH">1</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="SC_RDATA_WIDTH">128</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="SC_WDATA_WIDTH">128</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="SC_ARUSER_WIDTH">0</spirit:configurableElementValue>
@@ -1492,7 +1492,7 @@
           <spirit:configurableElementValue spirit:referenceId="READ_WRITE_MODE">READ_WRITE</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="IS_CASCADED">0</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="SSC_ROUTE_WIDTH">2</spirit:configurableElementValue>
-          <spirit:configurableElementValue spirit:referenceId="MEP_IDENTIFIER_WIDTH">2</spirit:configurableElementValue>
+          <spirit:configurableElementValue spirit:referenceId="MEP_IDENTIFIER_WIDTH">1</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="RDATA_WIDTH">128</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="WDATA_WIDTH">128</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="M_RUSER_BITS_PER_BYTE">0</spirit:configurableElementValue>
@@ -1504,7 +1504,7 @@
           <spirit:configurableElementValue spirit:referenceId="M_RUSER_WIDTH">0</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="M_WUSER_WIDTH">0</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="M_BUSER_WIDTH">0</spirit:configurableElementValue>
-          <spirit:configurableElementValue spirit:referenceId="S_ID_WIDTH">2</spirit:configurableElementValue>
+          <spirit:configurableElementValue spirit:referenceId="S_ID_WIDTH">1</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="M_ID_WIDTH">0</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="M_MAX_BURST_LENGTH">1</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="ADDR_WIDTH">28</spirit:configurableElementValue>
@@ -1512,10 +1512,8 @@
           <spirit:configurableElementValue spirit:referenceId="HAS_LOCK">0</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="HAS_BURST">1</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="NUM_MSC">1</spirit:configurableElementValue>
-          <spirit:configurableElementValue spirit:referenceId="SSC000_ROUTE">0b00</spirit:configurableElementValue>
-          <spirit:configurableElementValue spirit:referenceId="SSC001_ROUTE">0b01</spirit:configurableElementValue>
-          <spirit:configurableElementValue spirit:referenceId="SSC002_ROUTE">0b10</spirit:configurableElementValue>
-          <spirit:configurableElementValue spirit:referenceId="SSC003_ROUTE">0b00</spirit:configurableElementValue>
+          <spirit:configurableElementValue spirit:referenceId="SSC000_ROUTE">0b01</spirit:configurableElementValue>
+          <spirit:configurableElementValue spirit:referenceId="SSC001_ROUTE">0b10</spirit:configurableElementValue>
         </spirit:configurableElementValues>
       </spirit:componentInstance>
     </spirit:componentInstances>
@@ -1734,8 +1732,8 @@
           <spirit:configurableElementValue spirit:referenceId="CHANNEL">2</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="MAX_PAYLD_BYTES">16</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="SC_ROUTE_WIDTH">1</spirit:configurableElementValue>
-          <spirit:configurableElementValue spirit:referenceId="ID_WIDTH">2</spirit:configurableElementValue>
-          <spirit:configurableElementValue spirit:referenceId="PAYLD_WIDTH">140</spirit:configurableElementValue>
+          <spirit:configurableElementValue spirit:referenceId="ID_WIDTH">1</spirit:configurableElementValue>
+          <spirit:configurableElementValue spirit:referenceId="PAYLD_WIDTH">138</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="ADDR_WIDTH">32</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="USER_WIDTH">0</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="M_SEND_PIPELINE">0</spirit:configurableElementValue>
@@ -1786,8 +1784,8 @@
           <spirit:configurableElementValue spirit:referenceId="USER_BITS_PER_BYTE">0</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="MAX_PAYLD_BYTES">16</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="SC_ROUTE_WIDTH">2</spirit:configurableElementValue>
-          <spirit:configurableElementValue spirit:referenceId="ID_WIDTH">2</spirit:configurableElementValue>
-          <spirit:configurableElementValue spirit:referenceId="PAYLD_WIDTH">149</spirit:configurableElementValue>
+          <spirit:configurableElementValue spirit:referenceId="ID_WIDTH">1</spirit:configurableElementValue>
+          <spirit:configurableElementValue spirit:referenceId="PAYLD_WIDTH">148</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="ADDR_WIDTH">32</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="USER_WIDTH">0</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="M_PIPELINE">0</spirit:configurableElementValue>
@@ -1836,8 +1834,8 @@
           <spirit:configurableElementValue spirit:referenceId="CHANNEL">3</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="MAX_PAYLD_BYTES">16</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="SC_ROUTE_WIDTH">1</spirit:configurableElementValue>
-          <spirit:configurableElementValue spirit:referenceId="ID_WIDTH">2</spirit:configurableElementValue>
-          <spirit:configurableElementValue spirit:referenceId="PAYLD_WIDTH">140</spirit:configurableElementValue>
+          <spirit:configurableElementValue spirit:referenceId="ID_WIDTH">1</spirit:configurableElementValue>
+          <spirit:configurableElementValue spirit:referenceId="PAYLD_WIDTH">138</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="ADDR_WIDTH">32</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="USER_WIDTH">0</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="M_SEND_PIPELINE">0</spirit:configurableElementValue>
@@ -1888,7 +1886,7 @@
           <spirit:configurableElementValue spirit:referenceId="USER_BITS_PER_BYTE">0</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="MAX_PAYLD_BYTES">16</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="SC_ROUTE_WIDTH">1</spirit:configurableElementValue>
-          <spirit:configurableElementValue spirit:referenceId="ID_WIDTH">2</spirit:configurableElementValue>
+          <spirit:configurableElementValue spirit:referenceId="ID_WIDTH">1</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="PAYLD_WIDTH">160</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="ADDR_WIDTH">32</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="USER_WIDTH">0</spirit:configurableElementValue>
@@ -1939,8 +1937,8 @@
           <spirit:configurableElementValue spirit:referenceId="CHANNEL">4</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="MAX_PAYLD_BYTES">16</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="SC_ROUTE_WIDTH">2</spirit:configurableElementValue>
-          <spirit:configurableElementValue spirit:referenceId="ID_WIDTH">2</spirit:configurableElementValue>
-          <spirit:configurableElementValue spirit:referenceId="PAYLD_WIDTH">7</spirit:configurableElementValue>
+          <spirit:configurableElementValue spirit:referenceId="ID_WIDTH">1</spirit:configurableElementValue>
+          <spirit:configurableElementValue spirit:referenceId="PAYLD_WIDTH">6</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="ADDR_WIDTH">32</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="USER_WIDTH">0</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="M_PIPELINE">0</spirit:configurableElementValue>
@@ -2215,8 +2213,8 @@
           <spirit:configurableElementValue spirit:referenceId="CHANNEL">2</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="MAX_PAYLD_BYTES">16</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="SC_ROUTE_WIDTH">1</spirit:configurableElementValue>
-          <spirit:configurableElementValue spirit:referenceId="ID_WIDTH">2</spirit:configurableElementValue>
-          <spirit:configurableElementValue spirit:referenceId="PAYLD_WIDTH">140</spirit:configurableElementValue>
+          <spirit:configurableElementValue spirit:referenceId="ID_WIDTH">1</spirit:configurableElementValue>
+          <spirit:configurableElementValue spirit:referenceId="PAYLD_WIDTH">138</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="ADDR_WIDTH">32</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="USER_WIDTH">0</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="M_PIPELINE">0</spirit:configurableElementValue>
@@ -2267,8 +2265,8 @@
           <spirit:configurableElementValue spirit:referenceId="USER_BITS_PER_BYTE">0</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="MAX_PAYLD_BYTES">16</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="SC_ROUTE_WIDTH">2</spirit:configurableElementValue>
-          <spirit:configurableElementValue spirit:referenceId="ID_WIDTH">2</spirit:configurableElementValue>
-          <spirit:configurableElementValue spirit:referenceId="PAYLD_WIDTH">149</spirit:configurableElementValue>
+          <spirit:configurableElementValue spirit:referenceId="ID_WIDTH">1</spirit:configurableElementValue>
+          <spirit:configurableElementValue spirit:referenceId="PAYLD_WIDTH">148</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="ADDR_WIDTH">32</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="M_SEND_PIPELINE">0</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="S_LATENCY">1</spirit:configurableElementValue>
@@ -2473,8 +2471,8 @@
           <spirit:configurableElementValue spirit:referenceId="bd:xciName">bd_44e3_s01tr_0</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="READ_WRITE_MODE">READ_ONLY</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="IS_CASCADED">0</spirit:configurableElementValue>
-          <spirit:configurableElementValue spirit:referenceId="MEP_IDENTIFIER">2</spirit:configurableElementValue>
-          <spirit:configurableElementValue spirit:referenceId="MEP_IDENTIFIER_WIDTH">2</spirit:configurableElementValue>
+          <spirit:configurableElementValue spirit:referenceId="MEP_IDENTIFIER">1</spirit:configurableElementValue>
+          <spirit:configurableElementValue spirit:referenceId="MEP_IDENTIFIER_WIDTH">1</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="ADDR_WIDTH">32</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="S_ID_WIDTH">0</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="WDATA_WIDTH">32</spirit:configurableElementValue>
@@ -2495,12 +2493,12 @@
           <spirit:configurableElementValue spirit:referenceId="IS_CASCADED">0</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="NUM_READ_THREADS">1</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="NUM_WRITE_THREADS">1</spirit:configurableElementValue>
-          <spirit:configurableElementValue spirit:referenceId="MEP_IDENTIFIER_WIDTH">2</spirit:configurableElementValue>
+          <spirit:configurableElementValue spirit:referenceId="MEP_IDENTIFIER_WIDTH">1</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="SUPPORTS_NARROW">0</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="HAS_BURST">1</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="NUM_SEG">1</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="ADDR_WIDTH">32</spirit:configurableElementValue>
-          <spirit:configurableElementValue spirit:referenceId="ID_WIDTH">2</spirit:configurableElementValue>
+          <spirit:configurableElementValue spirit:referenceId="ID_WIDTH">1</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="RDATA_WIDTH">32</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="WDATA_WIDTH">32</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="NUM_MSC">1</spirit:configurableElementValue>
@@ -2746,8 +2744,8 @@
           <spirit:configurableElementValue spirit:referenceId="CHANNEL">2</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="MAX_PAYLD_BYTES">16</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="SC_ROUTE_WIDTH">1</spirit:configurableElementValue>
-          <spirit:configurableElementValue spirit:referenceId="ID_WIDTH">2</spirit:configurableElementValue>
-          <spirit:configurableElementValue spirit:referenceId="PAYLD_WIDTH">140</spirit:configurableElementValue>
+          <spirit:configurableElementValue spirit:referenceId="ID_WIDTH">1</spirit:configurableElementValue>
+          <spirit:configurableElementValue spirit:referenceId="PAYLD_WIDTH">138</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="ADDR_WIDTH">32</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="USER_WIDTH">0</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="M_PIPELINE">0</spirit:configurableElementValue>
@@ -2798,8 +2796,8 @@
           <spirit:configurableElementValue spirit:referenceId="USER_BITS_PER_BYTE">0</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="MAX_PAYLD_BYTES">16</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="SC_ROUTE_WIDTH">2</spirit:configurableElementValue>
-          <spirit:configurableElementValue spirit:referenceId="ID_WIDTH">2</spirit:configurableElementValue>
-          <spirit:configurableElementValue spirit:referenceId="PAYLD_WIDTH">149</spirit:configurableElementValue>
+          <spirit:configurableElementValue spirit:referenceId="ID_WIDTH">1</spirit:configurableElementValue>
+          <spirit:configurableElementValue spirit:referenceId="PAYLD_WIDTH">148</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="ADDR_WIDTH">32</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="M_SEND_PIPELINE">0</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="S_LATENCY">1</spirit:configurableElementValue>
@@ -2849,8 +2847,8 @@
           <spirit:configurableElementValue spirit:referenceId="CHANNEL">3</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="MAX_PAYLD_BYTES">16</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="SC_ROUTE_WIDTH">1</spirit:configurableElementValue>
-          <spirit:configurableElementValue spirit:referenceId="ID_WIDTH">2</spirit:configurableElementValue>
-          <spirit:configurableElementValue spirit:referenceId="PAYLD_WIDTH">140</spirit:configurableElementValue>
+          <spirit:configurableElementValue spirit:referenceId="ID_WIDTH">1</spirit:configurableElementValue>
+          <spirit:configurableElementValue spirit:referenceId="PAYLD_WIDTH">138</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="ADDR_WIDTH">32</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="USER_WIDTH">0</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="M_PIPELINE">0</spirit:configurableElementValue>
@@ -2901,7 +2899,7 @@
           <spirit:configurableElementValue spirit:referenceId="USER_BITS_PER_BYTE">0</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="MAX_PAYLD_BYTES">16</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="SC_ROUTE_WIDTH">1</spirit:configurableElementValue>
-          <spirit:configurableElementValue spirit:referenceId="ID_WIDTH">2</spirit:configurableElementValue>
+          <spirit:configurableElementValue spirit:referenceId="ID_WIDTH">1</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="PAYLD_WIDTH">160</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="ADDR_WIDTH">32</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="M_PIPELINE">0</spirit:configurableElementValue>
@@ -2951,8 +2949,8 @@
           <spirit:configurableElementValue spirit:referenceId="CHANNEL">4</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="MAX_PAYLD_BYTES">16</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="SC_ROUTE_WIDTH">2</spirit:configurableElementValue>
-          <spirit:configurableElementValue spirit:referenceId="ID_WIDTH">2</spirit:configurableElementValue>
-          <spirit:configurableElementValue spirit:referenceId="PAYLD_WIDTH">7</spirit:configurableElementValue>
+          <spirit:configurableElementValue spirit:referenceId="ID_WIDTH">1</spirit:configurableElementValue>
+          <spirit:configurableElementValue spirit:referenceId="PAYLD_WIDTH">6</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="ADDR_WIDTH">32</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="USER_WIDTH">0</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="M_SEND_PIPELINE">0</spirit:configurableElementValue>
@@ -3190,8 +3188,8 @@
           <spirit:configurableElementValue spirit:referenceId="bd:xciName">bd_44e3_s00tr_0</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="READ_WRITE_MODE">READ_WRITE</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="IS_CASCADED">0</spirit:configurableElementValue>
-          <spirit:configurableElementValue spirit:referenceId="MEP_IDENTIFIER">1</spirit:configurableElementValue>
-          <spirit:configurableElementValue spirit:referenceId="MEP_IDENTIFIER_WIDTH">2</spirit:configurableElementValue>
+          <spirit:configurableElementValue spirit:referenceId="MEP_IDENTIFIER">0</spirit:configurableElementValue>
+          <spirit:configurableElementValue spirit:referenceId="MEP_IDENTIFIER_WIDTH">1</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="ADDR_WIDTH">32</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="S_ID_WIDTH">0</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="WDATA_WIDTH">32</spirit:configurableElementValue>
@@ -3212,12 +3210,12 @@
           <spirit:configurableElementValue spirit:referenceId="IS_CASCADED">0</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="NUM_READ_THREADS">1</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="NUM_WRITE_THREADS">1</spirit:configurableElementValue>
-          <spirit:configurableElementValue spirit:referenceId="MEP_IDENTIFIER_WIDTH">2</spirit:configurableElementValue>
+          <spirit:configurableElementValue spirit:referenceId="MEP_IDENTIFIER_WIDTH">1</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="SUPPORTS_NARROW">0</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="HAS_BURST">1</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="NUM_SEG">1</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="ADDR_WIDTH">32</spirit:configurableElementValue>
-          <spirit:configurableElementValue spirit:referenceId="ID_WIDTH">2</spirit:configurableElementValue>
+          <spirit:configurableElementValue spirit:referenceId="ID_WIDTH">1</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="RDATA_WIDTH">32</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="WDATA_WIDTH">32</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="NUM_MSC">1</spirit:configurableElementValue>
@@ -3445,7 +3443,7 @@
           <spirit:configurableElementValue spirit:referenceId="S_LATENCY">0</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="NUM_SI">2</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="NUM_MI">1</spirit:configurableElementValue>
-          <spirit:configurableElementValue spirit:referenceId="PAYLD_WIDTH">140</spirit:configurableElementValue>
+          <spirit:configurableElementValue spirit:referenceId="PAYLD_WIDTH">138</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="M00_S00_CONNECTIVITY">1</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="M00_S01_CONNECTIVITY">1</spirit:configurableElementValue>
         </spirit:configurableElementValues>
@@ -3460,7 +3458,7 @@
           <spirit:configurableElementValue spirit:referenceId="S_LATENCY">0</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="NUM_SI">1</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="NUM_MI">2</spirit:configurableElementValue>
-          <spirit:configurableElementValue spirit:referenceId="PAYLD_WIDTH">149</spirit:configurableElementValue>
+          <spirit:configurableElementValue spirit:referenceId="PAYLD_WIDTH">148</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="M00_S00_CONNECTIVITY">1</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="M01_S00_CONNECTIVITY">1</spirit:configurableElementValue>
         </spirit:configurableElementValues>
@@ -3475,7 +3473,7 @@
           <spirit:configurableElementValue spirit:referenceId="S_LATENCY">0</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="NUM_SI">2</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="NUM_MI">1</spirit:configurableElementValue>
-          <spirit:configurableElementValue spirit:referenceId="PAYLD_WIDTH">140</spirit:configurableElementValue>
+          <spirit:configurableElementValue spirit:referenceId="PAYLD_WIDTH">138</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="M00_S00_CONNECTIVITY">1</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="M00_S01_CONNECTIVITY">1</spirit:configurableElementValue>
         </spirit:configurableElementValues>
@@ -3505,7 +3503,7 @@
           <spirit:configurableElementValue spirit:referenceId="S_LATENCY">0</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="NUM_SI">1</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="NUM_MI">2</spirit:configurableElementValue>
-          <spirit:configurableElementValue spirit:referenceId="PAYLD_WIDTH">7</spirit:configurableElementValue>
+          <spirit:configurableElementValue spirit:referenceId="PAYLD_WIDTH">6</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="M00_S00_CONNECTIVITY">1</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="M01_S00_CONNECTIVITY">1</spirit:configurableElementValue>
         </spirit:configurableElementValues>

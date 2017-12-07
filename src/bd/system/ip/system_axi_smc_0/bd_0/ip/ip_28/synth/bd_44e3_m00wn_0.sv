@@ -48,12 +48,12 @@
 
 
 // IP VLNV: xilinx.com:ip:sc_node:1.0
-// IP Revision: 5
+// IP Revision: 6
 
-(* X_CORE_INFO = "sc_node_v1_0_5_top,Vivado 2017.2.1" *)
-(* CHECK_LICENSE_TYPE = "bd_44e3_m00wn_0,sc_node_v1_0_5_top,{}" *)
-(* CORE_GENERATION_INFO = "bd_44e3_m00wn_0,sc_node_v1_0_5_top,{x_ipProduct=Vivado 2017.2.1,x_ipVendor=xilinx.com,x_ipLibrary=ip,x_ipName=sc_node,x_ipVersion=1.0,x_ipCoreRevision=5,x_ipLanguage=VHDL,x_ipSimLanguage=MIXED,C_FAMILY=spartan7,C_FIFO_IP=0,C_DISABLE_IP=0,C_FIFO_SIZE=5,C_FIFO_TYPE=0,C_ENABLE_PIPELINING=0x01,C_SYNCHRONIZATION_STAGES=2,C_NUM_SI=2,C_NUM_MI=1,C_CHANNEL=1,C_PAYLD_WIDTH=160,C_S_NUM_BYTES_ARRAY=0x0000001000000010,C_M_NUM_BYTES_ARRAY=0x00000010,C_USER_BITS_PER_BYTE=0,C_ARBITER_MODE=1,C_SC_ROUTE_WIDTH=1,C\
-_ID_WIDTH=2,C_ADDR_WIDTH=32,C_USER_WIDTH=0,C_MAX_PAYLD_BYTES=16,C_S_PIPELINE=0,C_M_PIPELINE=0,C_M_SEND_PIPELINE=0,C_S_LATENCY=1,C_ACLK_RELATIONSHIP=0,C_ACLKEN_CONVERSION=0}" *)
+(* X_CORE_INFO = "sc_node_v1_0_6_top,Vivado 2017.3" *)
+(* CHECK_LICENSE_TYPE = "bd_44e3_m00wn_0,sc_node_v1_0_6_top,{}" *)
+(* CORE_GENERATION_INFO = "bd_44e3_m00wn_0,sc_node_v1_0_6_top,{x_ipProduct=Vivado 2017.3,x_ipVendor=xilinx.com,x_ipLibrary=ip,x_ipName=sc_node,x_ipVersion=1.0,x_ipCoreRevision=6,x_ipLanguage=VHDL,x_ipSimLanguage=MIXED,C_FAMILY=spartan7,C_FIFO_IP=0,C_DISABLE_IP=0,C_FIFO_SIZE=5,C_FIFO_TYPE=0,C_ENABLE_PIPELINING=0x01,C_SYNCHRONIZATION_STAGES=3,C_NUM_SI=2,C_NUM_MI=1,C_CHANNEL=1,C_PAYLD_WIDTH=160,C_S_NUM_BYTES_ARRAY=0x0000001000000010,C_M_NUM_BYTES_ARRAY=0x00000010,C_USER_BITS_PER_BYTE=0,C_ARBITER_MODE=1,C_SC_ROUTE_WIDTH=1,C_I\
+D_WIDTH=1,C_ADDR_WIDTH=32,C_USER_WIDTH=0,C_MAX_PAYLD_BYTES=16,C_S_PIPELINE=0,C_M_PIPELINE=0,C_M_SEND_PIPELINE=0,C_S_LATENCY=1,C_ACLK_RELATIONSHIP=0,C_ACLKEN_CONVERSION=0}" *)
 (* DowngradeIPIdentifiedWarnings = "yes" *)
 module bd_44e3_m00wn_0 (
   s_sc_aclk,
@@ -75,8 +75,10 @@ module bd_44e3_m00wn_0 (
   s_axis_arb_tdata
 );
 
+(* X_INTERFACE_PARAMETER = "XIL_INTERFACENAME aclk, ASSOCIATED_BUSIF S_AXIS_ARB:M_AXIS_ARB:S_SC, ASSOCIATED_RESET s_sc_aresetn, ASSOCIATED_CLKEN s_sc_aclken, FREQ_HZ 100000000, PHASE 0.0, CLK_DOMAIN /clk_wiz_0_clk_out1" *)
 (* X_INTERFACE_INFO = "xilinx.com:signal:clock:1.0 aclk CLK" *)
 input wire s_sc_aclk;
+(* X_INTERFACE_PARAMETER = "XIL_INTERFACENAME aresetn, POLARITY ACTIVE_LOW" *)
 (* X_INTERFACE_INFO = "xilinx.com:signal:reset:1.0 aresetn RST" *)
 input wire s_sc_aresetn;
 (* X_INTERFACE_INFO = "xilinx.com:interface:sc:1.0 S_SC REQ" *)
@@ -89,8 +91,10 @@ input wire [1 : 0] s_sc_send;
 output wire [1 : 0] s_sc_recv;
 (* X_INTERFACE_INFO = "xilinx.com:interface:sc:1.0 S_SC PAYLD" *)
 input wire [159 : 0] s_sc_payld;
+(* X_INTERFACE_PARAMETER = "XIL_INTERFACENAME m_sc_aclk, ASSOCIATED_BUSIF M_SC, ASSOCIATED_RESET m_sc_aresetn, ASSOCIATED_CLKEN m_sc_aclken, FREQ_HZ 81247969, PHASE 0, CLK_DOMAIN system_mig_7series_0_0_ui_clk" *)
 (* X_INTERFACE_INFO = "xilinx.com:signal:clock:1.0 m_sc_aclk CLK" *)
 input wire m_sc_aclk;
+(* X_INTERFACE_PARAMETER = "XIL_INTERFACENAME m_sc_aresetn, POLARITY ACTIVE_LOW" *)
 (* X_INTERFACE_INFO = "xilinx.com:signal:reset:1.0 m_sc_aresetn RST" *)
 input wire m_sc_aresetn;
 (* X_INTERFACE_INFO = "xilinx.com:interface:sc:1.0 M_SC RECV" *)
@@ -107,17 +111,18 @@ output wire [159 : 0] m_sc_payld;
 input wire s_axis_arb_tvalid;
 (* X_INTERFACE_INFO = "xilinx.com:interface:axis:1.0 S_AXIS_ARB TREADY" *)
 output wire s_axis_arb_tready;
+(* X_INTERFACE_PARAMETER = "XIL_INTERFACENAME S_AXIS_ARB, TDATA_NUM_BYTES 2, TDEST_WIDTH 0, TID_WIDTH 0, TUSER_WIDTH 0, HAS_TREADY 1, HAS_TSTRB 0, HAS_TKEEP 0, HAS_TLAST 0, FREQ_HZ 100000000, PHASE 0.0, CLK_DOMAIN /clk_wiz_0_clk_out1, LAYERED_METADATA undef" *)
 (* X_INTERFACE_INFO = "xilinx.com:interface:axis:1.0 S_AXIS_ARB TDATA" *)
 input wire [15 : 0] s_axis_arb_tdata;
 
-  sc_node_v1_0_5_top #(
+  sc_node_v1_0_6_top #(
     .C_FAMILY("spartan7"),
     .C_FIFO_IP(0),
     .C_DISABLE_IP(0),
     .C_FIFO_SIZE(5),
     .C_FIFO_TYPE(0),
     .C_ENABLE_PIPELINING(8'H01),
-    .C_SYNCHRONIZATION_STAGES(2),
+    .C_SYNCHRONIZATION_STAGES(3),
     .C_NUM_SI(2),
     .C_NUM_MI(1),
     .C_CHANNEL(1),
@@ -127,7 +132,7 @@ input wire [15 : 0] s_axis_arb_tdata;
     .C_USER_BITS_PER_BYTE(0),
     .C_ARBITER_MODE(1),
     .C_SC_ROUTE_WIDTH(1),
-    .C_ID_WIDTH(2),
+    .C_ID_WIDTH(1),
     .C_ADDR_WIDTH(32),
     .C_USER_WIDTH(0),
     .C_MAX_PAYLD_BYTES(16),

@@ -20,7 +20,7 @@ set script_folder [_tcl::get_script_folder]
 ################################################################
 # Check if script is running in correct Vivado version.
 ################################################################
-set scripts_vivado_version 2017.2
+set scripts_vivado_version 2017.3
 set current_vivado_version [version -short]
 
 if { [string first $scripts_vivado_version $current_vivado_version] == -1 } {
@@ -49,70 +49,73 @@ if { $list_projs eq "" } {
 
 
 # CHANGE DESIGN NAME HERE
+variable design_name
 set design_name bd_44e3
 
-# This script was generated for a remote BD. To create a non-remote design,
-# change the variable <run_remote_bd_flow> to <0>.
+# If you do not already have an existing IP Integrator design open,
+# you can create a design using the following command:
+#    create_bd_design $design_name
 
-set run_remote_bd_flow 1
-if { $run_remote_bd_flow == 1 } {
-  # Set the reference directory for source file relative paths (by default 
-  # the value is script directory path)
-  set origin_dir ./bd_0
+# Creating design if needed
+set errMsg ""
+set nRet 0
 
-  # Use origin directory path location variable, if specified in the tcl shell
-  if { [info exists ::origin_dir_loc] } {
-     set origin_dir $::origin_dir_loc
-  }
+set cur_design [current_bd_design -quiet]
+set list_cells [get_bd_cells -quiet]
 
-  set str_bd_folder [file normalize ${origin_dir}]
-  set str_bd_filepath ${str_bd_folder}/${design_name}/${design_name}.bd
+if { ${design_name} eq "" } {
+   # USE CASES:
+   #    1) Design_name not set
 
-  # Check if remote design exists on disk
-  if { [file exists $str_bd_filepath ] == 1 } {
-     catch {common::send_msg_id "BD_TCL-110" "ERROR" "The remote BD file path <$str_bd_filepath> already exists!"}
-     common::send_msg_id "BD_TCL-008" "INFO" "To create a non-remote BD, change the variable <run_remote_bd_flow> to <0>."
-     common::send_msg_id "BD_TCL-009" "INFO" "Also make sure there is no design <$design_name> existing in your current project."
+   set errMsg "Please set the variable <design_name> to a non-empty value."
+   set nRet 1
 
-     return 1
-  }
+} elseif { ${cur_design} ne "" && ${list_cells} eq "" } {
+   # USE CASES:
+   #    2): Current design opened AND is empty AND names same.
+   #    3): Current design opened AND is empty AND names diff; design_name NOT in project.
+   #    4): Current design opened AND is empty AND names diff; design_name exists in project.
 
-  # Check if design exists in memory
-  set list_existing_designs [get_bd_designs -quiet $design_name]
-  if { $list_existing_designs ne "" } {
-     catch {common::send_msg_id "BD_TCL-111" "ERROR" "The design <$design_name> already exists in this project! Will not create the remote BD <$design_name> at the folder <$str_bd_folder>."}
+   if { $cur_design ne $design_name } {
+      common::send_msg_id "BD_TCL-001" "INFO" "Changing value of <design_name> from <$design_name> to <$cur_design> since current design is empty."
+      set design_name [get_property NAME $cur_design]
+   }
+   common::send_msg_id "BD_TCL-002" "INFO" "Constructing design in IPI design <$cur_design>..."
 
-     common::send_msg_id "BD_TCL-010" "INFO" "To create a non-remote BD, change the variable <run_remote_bd_flow> to <0> or please set a different value to variable <design_name>."
+} elseif { ${cur_design} ne "" && $list_cells ne "" && $cur_design eq $design_name } {
+   # USE CASES:
+   #    5) Current design opened AND has components AND same names.
 
-     return 1
-  }
+   set errMsg "Design <$design_name> already exists in your project, please set the variable <design_name> to another value."
+   set nRet 1
+} elseif { [get_files -quiet ${design_name}.bd] ne "" } {
+   # USE CASES: 
+   #    6) Current opened design, has components, but diff names, design_name exists in project.
+   #    7) No opened design, design_name exists in project.
 
-  # Check if design exists on disk within project
-  set list_existing_designs [get_files -quiet */${design_name}.bd]
-  if { $list_existing_designs ne "" } {
-     catch {common::send_msg_id "BD_TCL-112" "ERROR" "The design <$design_name> already exists in this project at location:
-    $list_existing_designs"}
-     catch {common::send_msg_id "BD_TCL-113" "ERROR" "Will not create the remote BD <$design_name> at the folder <$str_bd_folder>."}
+   set errMsg "Design <$design_name> already exists in your project, please set the variable <design_name> to another value."
+   set nRet 2
 
-     common::send_msg_id "BD_TCL-011" "INFO" "To create a non-remote BD, change the variable <run_remote_bd_flow> to <0> or please set a different value to variable <design_name>."
-
-     return 1
-  }
-
-  # Now can create the remote BD
-  # NOTE - usage of <-dir> will create <$str_bd_folder/$design_name/$design_name.bd>
-  create_bd_design -dir -bdsource SBD $str_bd_folder $design_name
 } else {
+   # USE CASES:
+   #    8) No opened design, design_name not in project.
+   #    9) Current opened design, has components, but diff names, design_name not in project.
 
-  # Create regular design
-  if { [catch {create_bd_design -bdsource SBD $design_name} errmsg] } {
-     common::send_msg_id "BD_TCL-012" "INFO" "Please set a different value to variable <design_name>."
+   common::send_msg_id "BD_TCL-003" "INFO" "Currently there is no design <$design_name> in project, so creating one..."
 
-     return 1
-  }
+   create_bd_design -bdsource SBD $design_name
+
+   common::send_msg_id "BD_TCL-004" "INFO" "Making design <$design_name> as current_bd_design."
+   current_bd_design $design_name
+
 }
 
-current_bd_design $design_name
+common::send_msg_id "BD_TCL-005" "INFO" "Currently the variable <design_name> is equal to \"$design_name\"."
+
+if { $nRet != 0 } {
+   catch {common::send_msg_id "BD_TCL-114" "ERROR" $errMsg}
+   return $nRet
+}
 
 ##################################################################
 # DESIGN PROCs
@@ -177,66 +180,66 @@ proc create_hier_cell_switchboards { parentCell nameHier } {
   # Create instance: ar_switchboard, and set properties
   set ar_switchboard [ create_bd_cell -type ip -vlnv xilinx.com:ip:sc_switchboard:1.0 ar_switchboard ]
   set_property -dict [ list \
-CONFIG.M00_S00_CONNECTIVITY {1} \
-CONFIG.M00_S01_CONNECTIVITY {1} \
-CONFIG.M_PIPELINES {1} \
-CONFIG.NUM_MI {1} \
-CONFIG.NUM_SI {2} \
-CONFIG.PAYLD_WIDTH {140} \
-CONFIG.S_LATENCY {0} \
-CONFIG.S_PIPELINES {0} \
+   CONFIG.M00_S00_CONNECTIVITY {1} \
+   CONFIG.M00_S01_CONNECTIVITY {1} \
+   CONFIG.M_PIPELINES {1} \
+   CONFIG.NUM_MI {1} \
+   CONFIG.NUM_SI {2} \
+   CONFIG.PAYLD_WIDTH {138} \
+   CONFIG.S_LATENCY {0} \
+   CONFIG.S_PIPELINES {0} \
  ] $ar_switchboard
 
   # Create instance: aw_switchboard, and set properties
   set aw_switchboard [ create_bd_cell -type ip -vlnv xilinx.com:ip:sc_switchboard:1.0 aw_switchboard ]
   set_property -dict [ list \
-CONFIG.M00_S00_CONNECTIVITY {1} \
-CONFIG.M00_S01_CONNECTIVITY {1} \
-CONFIG.M_PIPELINES {1} \
-CONFIG.NUM_MI {1} \
-CONFIG.NUM_SI {2} \
-CONFIG.PAYLD_WIDTH {140} \
-CONFIG.S_LATENCY {0} \
-CONFIG.S_PIPELINES {0} \
+   CONFIG.M00_S00_CONNECTIVITY {1} \
+   CONFIG.M00_S01_CONNECTIVITY {1} \
+   CONFIG.M_PIPELINES {1} \
+   CONFIG.NUM_MI {1} \
+   CONFIG.NUM_SI {2} \
+   CONFIG.PAYLD_WIDTH {138} \
+   CONFIG.S_LATENCY {0} \
+   CONFIG.S_PIPELINES {0} \
  ] $aw_switchboard
 
   # Create instance: b_switchboard, and set properties
   set b_switchboard [ create_bd_cell -type ip -vlnv xilinx.com:ip:sc_switchboard:1.0 b_switchboard ]
   set_property -dict [ list \
-CONFIG.M00_S00_CONNECTIVITY {1} \
-CONFIG.M01_S00_CONNECTIVITY {1} \
-CONFIG.M_PIPELINES {1} \
-CONFIG.NUM_MI {2} \
-CONFIG.NUM_SI {1} \
-CONFIG.PAYLD_WIDTH {7} \
-CONFIG.S_LATENCY {0} \
-CONFIG.S_PIPELINES {0} \
+   CONFIG.M00_S00_CONNECTIVITY {1} \
+   CONFIG.M01_S00_CONNECTIVITY {1} \
+   CONFIG.M_PIPELINES {1} \
+   CONFIG.NUM_MI {2} \
+   CONFIG.NUM_SI {1} \
+   CONFIG.PAYLD_WIDTH {6} \
+   CONFIG.S_LATENCY {0} \
+   CONFIG.S_PIPELINES {0} \
  ] $b_switchboard
 
   # Create instance: r_switchboard, and set properties
   set r_switchboard [ create_bd_cell -type ip -vlnv xilinx.com:ip:sc_switchboard:1.0 r_switchboard ]
   set_property -dict [ list \
-CONFIG.M00_S00_CONNECTIVITY {1} \
-CONFIG.M01_S00_CONNECTIVITY {1} \
-CONFIG.M_PIPELINES {1} \
-CONFIG.NUM_MI {2} \
-CONFIG.NUM_SI {1} \
-CONFIG.PAYLD_WIDTH {149} \
-CONFIG.S_LATENCY {0} \
-CONFIG.S_PIPELINES {0} \
+   CONFIG.M00_S00_CONNECTIVITY {1} \
+   CONFIG.M01_S00_CONNECTIVITY {1} \
+   CONFIG.M_PIPELINES {1} \
+   CONFIG.NUM_MI {2} \
+   CONFIG.NUM_SI {1} \
+   CONFIG.PAYLD_WIDTH {148} \
+   CONFIG.S_LATENCY {0} \
+   CONFIG.S_PIPELINES {0} \
  ] $r_switchboard
 
   # Create instance: w_switchboard, and set properties
   set w_switchboard [ create_bd_cell -type ip -vlnv xilinx.com:ip:sc_switchboard:1.0 w_switchboard ]
   set_property -dict [ list \
-CONFIG.M00_S00_CONNECTIVITY {1} \
-CONFIG.M00_S01_CONNECTIVITY {1} \
-CONFIG.M_PIPELINES {1} \
-CONFIG.NUM_MI {1} \
-CONFIG.NUM_SI {2} \
-CONFIG.PAYLD_WIDTH {160} \
-CONFIG.S_LATENCY {0} \
-CONFIG.S_PIPELINES {0} \
+   CONFIG.M00_S00_CONNECTIVITY {1} \
+   CONFIG.M00_S01_CONNECTIVITY {1} \
+   CONFIG.M_PIPELINES {1} \
+   CONFIG.NUM_MI {1} \
+   CONFIG.NUM_SI {2} \
+   CONFIG.PAYLD_WIDTH {160} \
+   CONFIG.S_LATENCY {0} \
+   CONFIG.S_PIPELINES {0} \
  ] $w_switchboard
 
   # Create interface connections
@@ -312,100 +315,100 @@ proc create_hier_cell_s01_nodes { parentCell nameHier } {
   # Create instance: s01_ar_node, and set properties
   set s01_ar_node [ create_bd_cell -type ip -vlnv xilinx.com:ip:sc_node:1.0 s01_ar_node ]
   set_property -dict [ list \
-CONFIG.ACLKEN_CONVERSION {0} \
-CONFIG.ACLK_RELATIONSHIP {1} \
-CONFIG.ADDR_WIDTH {32} \
-CONFIG.CHANNEL {2} \
-CONFIG.ID_WIDTH {2} \
-CONFIG.M00_NUM_BYTES {16} \
-CONFIG.M01_NUM_BYTES {16} \
-CONFIG.M02_NUM_BYTES {16} \
-CONFIG.M03_NUM_BYTES {16} \
-CONFIG.M04_NUM_BYTES {16} \
-CONFIG.M05_NUM_BYTES {16} \
-CONFIG.M06_NUM_BYTES {16} \
-CONFIG.M07_NUM_BYTES {16} \
-CONFIG.M08_NUM_BYTES {16} \
-CONFIG.M09_NUM_BYTES {16} \
-CONFIG.M10_NUM_BYTES {16} \
-CONFIG.M11_NUM_BYTES {16} \
-CONFIG.M12_NUM_BYTES {16} \
-CONFIG.M13_NUM_BYTES {16} \
-CONFIG.M14_NUM_BYTES {16} \
-CONFIG.M15_NUM_BYTES {16} \
-CONFIG.MAX_PAYLD_BYTES {16} \
-CONFIG.M_PIPELINE {0} \
-CONFIG.NUM_MI {1} \
-CONFIG.NUM_SI {1} \
-CONFIG.PAYLD_WIDTH {140} \
-CONFIG.S00_NUM_BYTES {4} \
-CONFIG.S01_NUM_BYTES {4} \
-CONFIG.S02_NUM_BYTES {4} \
-CONFIG.S03_NUM_BYTES {4} \
-CONFIG.S04_NUM_BYTES {4} \
-CONFIG.S05_NUM_BYTES {4} \
-CONFIG.S06_NUM_BYTES {4} \
-CONFIG.S07_NUM_BYTES {4} \
-CONFIG.S08_NUM_BYTES {4} \
-CONFIG.S09_NUM_BYTES {4} \
-CONFIG.S10_NUM_BYTES {4} \
-CONFIG.S11_NUM_BYTES {4} \
-CONFIG.S12_NUM_BYTES {4} \
-CONFIG.S13_NUM_BYTES {4} \
-CONFIG.S14_NUM_BYTES {4} \
-CONFIG.S15_NUM_BYTES {4} \
-CONFIG.SC_ROUTE_WIDTH {1} \
-CONFIG.USER_WIDTH {0} \
+   CONFIG.ACLKEN_CONVERSION {0} \
+   CONFIG.ACLK_RELATIONSHIP {1} \
+   CONFIG.ADDR_WIDTH {32} \
+   CONFIG.CHANNEL {2} \
+   CONFIG.ID_WIDTH {1} \
+   CONFIG.M00_NUM_BYTES {16} \
+   CONFIG.M01_NUM_BYTES {16} \
+   CONFIG.M02_NUM_BYTES {16} \
+   CONFIG.M03_NUM_BYTES {16} \
+   CONFIG.M04_NUM_BYTES {16} \
+   CONFIG.M05_NUM_BYTES {16} \
+   CONFIG.M06_NUM_BYTES {16} \
+   CONFIG.M07_NUM_BYTES {16} \
+   CONFIG.M08_NUM_BYTES {16} \
+   CONFIG.M09_NUM_BYTES {16} \
+   CONFIG.M10_NUM_BYTES {16} \
+   CONFIG.M11_NUM_BYTES {16} \
+   CONFIG.M12_NUM_BYTES {16} \
+   CONFIG.M13_NUM_BYTES {16} \
+   CONFIG.M14_NUM_BYTES {16} \
+   CONFIG.M15_NUM_BYTES {16} \
+   CONFIG.MAX_PAYLD_BYTES {16} \
+   CONFIG.M_PIPELINE {0} \
+   CONFIG.NUM_MI {1} \
+   CONFIG.NUM_SI {1} \
+   CONFIG.PAYLD_WIDTH {138} \
+   CONFIG.S00_NUM_BYTES {4} \
+   CONFIG.S01_NUM_BYTES {4} \
+   CONFIG.S02_NUM_BYTES {4} \
+   CONFIG.S03_NUM_BYTES {4} \
+   CONFIG.S04_NUM_BYTES {4} \
+   CONFIG.S05_NUM_BYTES {4} \
+   CONFIG.S06_NUM_BYTES {4} \
+   CONFIG.S07_NUM_BYTES {4} \
+   CONFIG.S08_NUM_BYTES {4} \
+   CONFIG.S09_NUM_BYTES {4} \
+   CONFIG.S10_NUM_BYTES {4} \
+   CONFIG.S11_NUM_BYTES {4} \
+   CONFIG.S12_NUM_BYTES {4} \
+   CONFIG.S13_NUM_BYTES {4} \
+   CONFIG.S14_NUM_BYTES {4} \
+   CONFIG.S15_NUM_BYTES {4} \
+   CONFIG.SC_ROUTE_WIDTH {1} \
+   CONFIG.USER_WIDTH {0} \
  ] $s01_ar_node
 
   # Create instance: s01_r_node, and set properties
   set s01_r_node [ create_bd_cell -type ip -vlnv xilinx.com:ip:sc_node:1.0 s01_r_node ]
   set_property -dict [ list \
-CONFIG.ACLKEN_CONVERSION {0} \
-CONFIG.ACLK_RELATIONSHIP {1} \
-CONFIG.ADDR_WIDTH {32} \
-CONFIG.CHANNEL {0} \
-CONFIG.ID_WIDTH {2} \
-CONFIG.M00_NUM_BYTES {4} \
-CONFIG.M01_NUM_BYTES {4} \
-CONFIG.M02_NUM_BYTES {4} \
-CONFIG.M03_NUM_BYTES {4} \
-CONFIG.M04_NUM_BYTES {4} \
-CONFIG.M05_NUM_BYTES {4} \
-CONFIG.M06_NUM_BYTES {4} \
-CONFIG.M07_NUM_BYTES {4} \
-CONFIG.M08_NUM_BYTES {4} \
-CONFIG.M09_NUM_BYTES {4} \
-CONFIG.M10_NUM_BYTES {4} \
-CONFIG.M11_NUM_BYTES {4} \
-CONFIG.M12_NUM_BYTES {4} \
-CONFIG.M13_NUM_BYTES {4} \
-CONFIG.M14_NUM_BYTES {4} \
-CONFIG.M15_NUM_BYTES {4} \
-CONFIG.MAX_PAYLD_BYTES {16} \
-CONFIG.M_SEND_PIPELINE {0} \
-CONFIG.NUM_MI {1} \
-CONFIG.NUM_SI {1} \
-CONFIG.PAYLD_WIDTH {149} \
-CONFIG.S00_NUM_BYTES {16} \
-CONFIG.S01_NUM_BYTES {16} \
-CONFIG.S02_NUM_BYTES {16} \
-CONFIG.S03_NUM_BYTES {16} \
-CONFIG.S04_NUM_BYTES {16} \
-CONFIG.S05_NUM_BYTES {16} \
-CONFIG.S06_NUM_BYTES {16} \
-CONFIG.S07_NUM_BYTES {16} \
-CONFIG.S08_NUM_BYTES {16} \
-CONFIG.S09_NUM_BYTES {16} \
-CONFIG.S10_NUM_BYTES {16} \
-CONFIG.S11_NUM_BYTES {16} \
-CONFIG.S12_NUM_BYTES {16} \
-CONFIG.S13_NUM_BYTES {16} \
-CONFIG.S14_NUM_BYTES {16} \
-CONFIG.S15_NUM_BYTES {16} \
-CONFIG.SC_ROUTE_WIDTH {2} \
-CONFIG.S_LATENCY {1} \
-CONFIG.USER_BITS_PER_BYTE {0} \
+   CONFIG.ACLKEN_CONVERSION {0} \
+   CONFIG.ACLK_RELATIONSHIP {1} \
+   CONFIG.ADDR_WIDTH {32} \
+   CONFIG.CHANNEL {0} \
+   CONFIG.ID_WIDTH {1} \
+   CONFIG.M00_NUM_BYTES {4} \
+   CONFIG.M01_NUM_BYTES {4} \
+   CONFIG.M02_NUM_BYTES {4} \
+   CONFIG.M03_NUM_BYTES {4} \
+   CONFIG.M04_NUM_BYTES {4} \
+   CONFIG.M05_NUM_BYTES {4} \
+   CONFIG.M06_NUM_BYTES {4} \
+   CONFIG.M07_NUM_BYTES {4} \
+   CONFIG.M08_NUM_BYTES {4} \
+   CONFIG.M09_NUM_BYTES {4} \
+   CONFIG.M10_NUM_BYTES {4} \
+   CONFIG.M11_NUM_BYTES {4} \
+   CONFIG.M12_NUM_BYTES {4} \
+   CONFIG.M13_NUM_BYTES {4} \
+   CONFIG.M14_NUM_BYTES {4} \
+   CONFIG.M15_NUM_BYTES {4} \
+   CONFIG.MAX_PAYLD_BYTES {16} \
+   CONFIG.M_SEND_PIPELINE {0} \
+   CONFIG.NUM_MI {1} \
+   CONFIG.NUM_SI {1} \
+   CONFIG.PAYLD_WIDTH {148} \
+   CONFIG.S00_NUM_BYTES {16} \
+   CONFIG.S01_NUM_BYTES {16} \
+   CONFIG.S02_NUM_BYTES {16} \
+   CONFIG.S03_NUM_BYTES {16} \
+   CONFIG.S04_NUM_BYTES {16} \
+   CONFIG.S05_NUM_BYTES {16} \
+   CONFIG.S06_NUM_BYTES {16} \
+   CONFIG.S07_NUM_BYTES {16} \
+   CONFIG.S08_NUM_BYTES {16} \
+   CONFIG.S09_NUM_BYTES {16} \
+   CONFIG.S10_NUM_BYTES {16} \
+   CONFIG.S11_NUM_BYTES {16} \
+   CONFIG.S12_NUM_BYTES {16} \
+   CONFIG.S13_NUM_BYTES {16} \
+   CONFIG.S14_NUM_BYTES {16} \
+   CONFIG.S15_NUM_BYTES {16} \
+   CONFIG.SC_ROUTE_WIDTH {2} \
+   CONFIG.S_LATENCY {1} \
+   CONFIG.USER_BITS_PER_BYTE {0} \
  ] $s01_r_node
 
   # Create interface connections
@@ -469,72 +472,72 @@ proc create_hier_cell_s01_entry_pipeline { parentCell nameHier } {
   # Create instance: s01_mmu, and set properties
   set s01_mmu [ create_bd_cell -type ip -vlnv xilinx.com:ip:sc_mmu:1.0 s01_mmu ]
   set_property -dict [ list \
-CONFIG.ADDR_WIDTH {32} \
-CONFIG.ID_WIDTH {0} \
-CONFIG.IS_CASCADED {0} \
-CONFIG.MSC000_ROUTE {0b1} \
-CONFIG.MSC_ROUTE_WIDTH {1} \
-CONFIG.NUM_MSC {1} \
-CONFIG.NUM_SEG {1} \
-CONFIG.RDATA_WIDTH {32} \
-CONFIG.READ_WRITE_MODE {READ_ONLY} \
-CONFIG.SEG000_BASE_ADDR {0x0000000080000000} \
-CONFIG.SEG000_SECURE_READ {0} \
-CONFIG.SEG000_SECURE_WRITE {0} \
-CONFIG.SEG000_SEP_ROUTE {0b0000000000000000000000000000000000000000000000000000000000000000} \
-CONFIG.SEG000_SIZE {28} \
-CONFIG.SEG000_SUPPORTS_READ {1} \
-CONFIG.SEG000_SUPPORTS_WRITE {1} \
-CONFIG.S_ARUSER_WIDTH {0} \
-CONFIG.S_PROTOCOL {AXI4} \
-CONFIG.S_RUSER_WIDTH {0} \
-CONFIG.S_WUSER_WIDTH {0} \
-CONFIG.WDATA_WIDTH {32} \
+   CONFIG.ADDR_WIDTH {32} \
+   CONFIG.ID_WIDTH {0} \
+   CONFIG.IS_CASCADED {0} \
+   CONFIG.MSC000_ROUTE {0b1} \
+   CONFIG.MSC_ROUTE_WIDTH {1} \
+   CONFIG.NUM_MSC {1} \
+   CONFIG.NUM_SEG {1} \
+   CONFIG.RDATA_WIDTH {32} \
+   CONFIG.READ_WRITE_MODE {READ_ONLY} \
+   CONFIG.SEG000_BASE_ADDR {0x0000000080000000} \
+   CONFIG.SEG000_SECURE_READ {0} \
+   CONFIG.SEG000_SECURE_WRITE {0} \
+   CONFIG.SEG000_SEP_ROUTE {0b0000000000000000000000000000000000000000000000000000000000000000} \
+   CONFIG.SEG000_SIZE {28} \
+   CONFIG.SEG000_SUPPORTS_READ {1} \
+   CONFIG.SEG000_SUPPORTS_WRITE {1} \
+   CONFIG.S_ARUSER_WIDTH {0} \
+   CONFIG.S_PROTOCOL {AXI4} \
+   CONFIG.S_RUSER_WIDTH {0} \
+   CONFIG.S_WUSER_WIDTH {0} \
+   CONFIG.WDATA_WIDTH {32} \
  ] $s01_mmu
 
   # Create instance: s01_si_converter, and set properties
   set s01_si_converter [ create_bd_cell -type ip -vlnv xilinx.com:ip:sc_si_converter:1.0 s01_si_converter ]
   set_property -dict [ list \
-CONFIG.ADDR_WIDTH {32} \
-CONFIG.HAS_BURST {1} \
-CONFIG.ID_WIDTH {2} \
-CONFIG.IS_CASCADED {0} \
-CONFIG.LIMIT_READ_LENGTH {0} \
-CONFIG.LIMIT_WRITE_LENGTH {0} \
-CONFIG.MAX_RUSER_BITS_PER_BYTE {0} \
-CONFIG.MAX_WUSER_BITS_PER_BYTE {0} \
-CONFIG.MEP_IDENTIFIER_WIDTH {2} \
-CONFIG.MSC000_RDATA_WIDTH {128} \
-CONFIG.MSC000_WDATA_WIDTH {128} \
-CONFIG.NUM_MSC {1} \
-CONFIG.NUM_READ_THREADS {1} \
-CONFIG.NUM_SEG {1} \
-CONFIG.NUM_WRITE_THREADS {1} \
-CONFIG.RDATA_WIDTH {32} \
-CONFIG.READ_WRITE_MODE {READ_ONLY} \
-CONFIG.SEP000_PROTOCOL {AXI4} \
-CONFIG.SEP000_RDATA_WIDTH {128} \
-CONFIG.SEP000_WDATA_WIDTH {128} \
-CONFIG.SUPPORTS_NARROW {0} \
-CONFIG.S_RUSER_BITS_PER_BYTE {0} \
-CONFIG.S_WUSER_BITS_PER_BYTE {0} \
-CONFIG.WDATA_WIDTH {32} \
+   CONFIG.ADDR_WIDTH {32} \
+   CONFIG.HAS_BURST {1} \
+   CONFIG.ID_WIDTH {1} \
+   CONFIG.IS_CASCADED {0} \
+   CONFIG.LIMIT_READ_LENGTH {0} \
+   CONFIG.LIMIT_WRITE_LENGTH {0} \
+   CONFIG.MAX_RUSER_BITS_PER_BYTE {0} \
+   CONFIG.MAX_WUSER_BITS_PER_BYTE {0} \
+   CONFIG.MEP_IDENTIFIER_WIDTH {1} \
+   CONFIG.MSC000_RDATA_WIDTH {128} \
+   CONFIG.MSC000_WDATA_WIDTH {128} \
+   CONFIG.NUM_MSC {1} \
+   CONFIG.NUM_READ_THREADS {1} \
+   CONFIG.NUM_SEG {1} \
+   CONFIG.NUM_WRITE_THREADS {1} \
+   CONFIG.RDATA_WIDTH {32} \
+   CONFIG.READ_WRITE_MODE {READ_ONLY} \
+   CONFIG.SEP000_PROTOCOL {AXI4} \
+   CONFIG.SEP000_RDATA_WIDTH {128} \
+   CONFIG.SEP000_WDATA_WIDTH {128} \
+   CONFIG.SUPPORTS_NARROW {0} \
+   CONFIG.S_RUSER_BITS_PER_BYTE {0} \
+   CONFIG.S_WUSER_BITS_PER_BYTE {0} \
+   CONFIG.WDATA_WIDTH {32} \
  ] $s01_si_converter
 
   # Create instance: s01_transaction_regulator, and set properties
   set s01_transaction_regulator [ create_bd_cell -type ip -vlnv xilinx.com:ip:sc_transaction_regulator:1.0 s01_transaction_regulator ]
   set_property -dict [ list \
-CONFIG.ADDR_WIDTH {32} \
-CONFIG.IS_CASCADED {0} \
-CONFIG.MEP_IDENTIFIER {2} \
-CONFIG.MEP_IDENTIFIER_WIDTH {2} \
-CONFIG.RDATA_WIDTH {32} \
-CONFIG.READ_WRITE_MODE {READ_ONLY} \
-CONFIG.SEP_ROUTE_WIDTH {1} \
-CONFIG.SUPPORTS_READ_DEADLOCK {0} \
-CONFIG.SUPPORTS_WRITE_DEADLOCK {0} \
-CONFIG.S_ID_WIDTH {0} \
-CONFIG.WDATA_WIDTH {32} \
+   CONFIG.ADDR_WIDTH {32} \
+   CONFIG.IS_CASCADED {0} \
+   CONFIG.MEP_IDENTIFIER {1} \
+   CONFIG.MEP_IDENTIFIER_WIDTH {1} \
+   CONFIG.RDATA_WIDTH {32} \
+   CONFIG.READ_WRITE_MODE {READ_ONLY} \
+   CONFIG.SEP_ROUTE_WIDTH {1} \
+   CONFIG.SUPPORTS_READ_DEADLOCK {0} \
+   CONFIG.SUPPORTS_WRITE_DEADLOCK {0} \
+   CONFIG.S_ID_WIDTH {0} \
+   CONFIG.WDATA_WIDTH {32} \
  ] $s01_transaction_regulator
 
   # Create interface connections
@@ -606,248 +609,248 @@ proc create_hier_cell_s00_nodes { parentCell nameHier } {
   # Create instance: s00_ar_node, and set properties
   set s00_ar_node [ create_bd_cell -type ip -vlnv xilinx.com:ip:sc_node:1.0 s00_ar_node ]
   set_property -dict [ list \
-CONFIG.ACLKEN_CONVERSION {0} \
-CONFIG.ACLK_RELATIONSHIP {1} \
-CONFIG.ADDR_WIDTH {32} \
-CONFIG.CHANNEL {2} \
-CONFIG.ID_WIDTH {2} \
-CONFIG.M00_NUM_BYTES {16} \
-CONFIG.M01_NUM_BYTES {16} \
-CONFIG.M02_NUM_BYTES {16} \
-CONFIG.M03_NUM_BYTES {16} \
-CONFIG.M04_NUM_BYTES {16} \
-CONFIG.M05_NUM_BYTES {16} \
-CONFIG.M06_NUM_BYTES {16} \
-CONFIG.M07_NUM_BYTES {16} \
-CONFIG.M08_NUM_BYTES {16} \
-CONFIG.M09_NUM_BYTES {16} \
-CONFIG.M10_NUM_BYTES {16} \
-CONFIG.M11_NUM_BYTES {16} \
-CONFIG.M12_NUM_BYTES {16} \
-CONFIG.M13_NUM_BYTES {16} \
-CONFIG.M14_NUM_BYTES {16} \
-CONFIG.M15_NUM_BYTES {16} \
-CONFIG.MAX_PAYLD_BYTES {16} \
-CONFIG.M_PIPELINE {0} \
-CONFIG.NUM_MI {1} \
-CONFIG.NUM_SI {1} \
-CONFIG.PAYLD_WIDTH {140} \
-CONFIG.S00_NUM_BYTES {4} \
-CONFIG.S01_NUM_BYTES {4} \
-CONFIG.S02_NUM_BYTES {4} \
-CONFIG.S03_NUM_BYTES {4} \
-CONFIG.S04_NUM_BYTES {4} \
-CONFIG.S05_NUM_BYTES {4} \
-CONFIG.S06_NUM_BYTES {4} \
-CONFIG.S07_NUM_BYTES {4} \
-CONFIG.S08_NUM_BYTES {4} \
-CONFIG.S09_NUM_BYTES {4} \
-CONFIG.S10_NUM_BYTES {4} \
-CONFIG.S11_NUM_BYTES {4} \
-CONFIG.S12_NUM_BYTES {4} \
-CONFIG.S13_NUM_BYTES {4} \
-CONFIG.S14_NUM_BYTES {4} \
-CONFIG.S15_NUM_BYTES {4} \
-CONFIG.SC_ROUTE_WIDTH {1} \
-CONFIG.USER_WIDTH {0} \
+   CONFIG.ACLKEN_CONVERSION {0} \
+   CONFIG.ACLK_RELATIONSHIP {1} \
+   CONFIG.ADDR_WIDTH {32} \
+   CONFIG.CHANNEL {2} \
+   CONFIG.ID_WIDTH {1} \
+   CONFIG.M00_NUM_BYTES {16} \
+   CONFIG.M01_NUM_BYTES {16} \
+   CONFIG.M02_NUM_BYTES {16} \
+   CONFIG.M03_NUM_BYTES {16} \
+   CONFIG.M04_NUM_BYTES {16} \
+   CONFIG.M05_NUM_BYTES {16} \
+   CONFIG.M06_NUM_BYTES {16} \
+   CONFIG.M07_NUM_BYTES {16} \
+   CONFIG.M08_NUM_BYTES {16} \
+   CONFIG.M09_NUM_BYTES {16} \
+   CONFIG.M10_NUM_BYTES {16} \
+   CONFIG.M11_NUM_BYTES {16} \
+   CONFIG.M12_NUM_BYTES {16} \
+   CONFIG.M13_NUM_BYTES {16} \
+   CONFIG.M14_NUM_BYTES {16} \
+   CONFIG.M15_NUM_BYTES {16} \
+   CONFIG.MAX_PAYLD_BYTES {16} \
+   CONFIG.M_PIPELINE {0} \
+   CONFIG.NUM_MI {1} \
+   CONFIG.NUM_SI {1} \
+   CONFIG.PAYLD_WIDTH {138} \
+   CONFIG.S00_NUM_BYTES {4} \
+   CONFIG.S01_NUM_BYTES {4} \
+   CONFIG.S02_NUM_BYTES {4} \
+   CONFIG.S03_NUM_BYTES {4} \
+   CONFIG.S04_NUM_BYTES {4} \
+   CONFIG.S05_NUM_BYTES {4} \
+   CONFIG.S06_NUM_BYTES {4} \
+   CONFIG.S07_NUM_BYTES {4} \
+   CONFIG.S08_NUM_BYTES {4} \
+   CONFIG.S09_NUM_BYTES {4} \
+   CONFIG.S10_NUM_BYTES {4} \
+   CONFIG.S11_NUM_BYTES {4} \
+   CONFIG.S12_NUM_BYTES {4} \
+   CONFIG.S13_NUM_BYTES {4} \
+   CONFIG.S14_NUM_BYTES {4} \
+   CONFIG.S15_NUM_BYTES {4} \
+   CONFIG.SC_ROUTE_WIDTH {1} \
+   CONFIG.USER_WIDTH {0} \
  ] $s00_ar_node
 
   # Create instance: s00_aw_node, and set properties
   set s00_aw_node [ create_bd_cell -type ip -vlnv xilinx.com:ip:sc_node:1.0 s00_aw_node ]
   set_property -dict [ list \
-CONFIG.ACLKEN_CONVERSION {0} \
-CONFIG.ACLK_RELATIONSHIP {1} \
-CONFIG.ADDR_WIDTH {32} \
-CONFIG.CHANNEL {3} \
-CONFIG.ID_WIDTH {2} \
-CONFIG.M00_NUM_BYTES {16} \
-CONFIG.M01_NUM_BYTES {16} \
-CONFIG.M02_NUM_BYTES {16} \
-CONFIG.M03_NUM_BYTES {16} \
-CONFIG.M04_NUM_BYTES {16} \
-CONFIG.M05_NUM_BYTES {16} \
-CONFIG.M06_NUM_BYTES {16} \
-CONFIG.M07_NUM_BYTES {16} \
-CONFIG.M08_NUM_BYTES {16} \
-CONFIG.M09_NUM_BYTES {16} \
-CONFIG.M10_NUM_BYTES {16} \
-CONFIG.M11_NUM_BYTES {16} \
-CONFIG.M12_NUM_BYTES {16} \
-CONFIG.M13_NUM_BYTES {16} \
-CONFIG.M14_NUM_BYTES {16} \
-CONFIG.M15_NUM_BYTES {16} \
-CONFIG.MAX_PAYLD_BYTES {16} \
-CONFIG.M_PIPELINE {0} \
-CONFIG.NUM_MI {1} \
-CONFIG.NUM_SI {1} \
-CONFIG.PAYLD_WIDTH {140} \
-CONFIG.S00_NUM_BYTES {4} \
-CONFIG.S01_NUM_BYTES {4} \
-CONFIG.S02_NUM_BYTES {4} \
-CONFIG.S03_NUM_BYTES {4} \
-CONFIG.S04_NUM_BYTES {4} \
-CONFIG.S05_NUM_BYTES {4} \
-CONFIG.S06_NUM_BYTES {4} \
-CONFIG.S07_NUM_BYTES {4} \
-CONFIG.S08_NUM_BYTES {4} \
-CONFIG.S09_NUM_BYTES {4} \
-CONFIG.S10_NUM_BYTES {4} \
-CONFIG.S11_NUM_BYTES {4} \
-CONFIG.S12_NUM_BYTES {4} \
-CONFIG.S13_NUM_BYTES {4} \
-CONFIG.S14_NUM_BYTES {4} \
-CONFIG.S15_NUM_BYTES {4} \
-CONFIG.SC_ROUTE_WIDTH {1} \
-CONFIG.USER_WIDTH {0} \
+   CONFIG.ACLKEN_CONVERSION {0} \
+   CONFIG.ACLK_RELATIONSHIP {1} \
+   CONFIG.ADDR_WIDTH {32} \
+   CONFIG.CHANNEL {3} \
+   CONFIG.ID_WIDTH {1} \
+   CONFIG.M00_NUM_BYTES {16} \
+   CONFIG.M01_NUM_BYTES {16} \
+   CONFIG.M02_NUM_BYTES {16} \
+   CONFIG.M03_NUM_BYTES {16} \
+   CONFIG.M04_NUM_BYTES {16} \
+   CONFIG.M05_NUM_BYTES {16} \
+   CONFIG.M06_NUM_BYTES {16} \
+   CONFIG.M07_NUM_BYTES {16} \
+   CONFIG.M08_NUM_BYTES {16} \
+   CONFIG.M09_NUM_BYTES {16} \
+   CONFIG.M10_NUM_BYTES {16} \
+   CONFIG.M11_NUM_BYTES {16} \
+   CONFIG.M12_NUM_BYTES {16} \
+   CONFIG.M13_NUM_BYTES {16} \
+   CONFIG.M14_NUM_BYTES {16} \
+   CONFIG.M15_NUM_BYTES {16} \
+   CONFIG.MAX_PAYLD_BYTES {16} \
+   CONFIG.M_PIPELINE {0} \
+   CONFIG.NUM_MI {1} \
+   CONFIG.NUM_SI {1} \
+   CONFIG.PAYLD_WIDTH {138} \
+   CONFIG.S00_NUM_BYTES {4} \
+   CONFIG.S01_NUM_BYTES {4} \
+   CONFIG.S02_NUM_BYTES {4} \
+   CONFIG.S03_NUM_BYTES {4} \
+   CONFIG.S04_NUM_BYTES {4} \
+   CONFIG.S05_NUM_BYTES {4} \
+   CONFIG.S06_NUM_BYTES {4} \
+   CONFIG.S07_NUM_BYTES {4} \
+   CONFIG.S08_NUM_BYTES {4} \
+   CONFIG.S09_NUM_BYTES {4} \
+   CONFIG.S10_NUM_BYTES {4} \
+   CONFIG.S11_NUM_BYTES {4} \
+   CONFIG.S12_NUM_BYTES {4} \
+   CONFIG.S13_NUM_BYTES {4} \
+   CONFIG.S14_NUM_BYTES {4} \
+   CONFIG.S15_NUM_BYTES {4} \
+   CONFIG.SC_ROUTE_WIDTH {1} \
+   CONFIG.USER_WIDTH {0} \
  ] $s00_aw_node
 
   # Create instance: s00_b_node, and set properties
   set s00_b_node [ create_bd_cell -type ip -vlnv xilinx.com:ip:sc_node:1.0 s00_b_node ]
   set_property -dict [ list \
-CONFIG.ACLKEN_CONVERSION {0} \
-CONFIG.ACLK_RELATIONSHIP {1} \
-CONFIG.ADDR_WIDTH {32} \
-CONFIG.CHANNEL {4} \
-CONFIG.ID_WIDTH {2} \
-CONFIG.M00_NUM_BYTES {4} \
-CONFIG.M01_NUM_BYTES {4} \
-CONFIG.M02_NUM_BYTES {4} \
-CONFIG.M03_NUM_BYTES {4} \
-CONFIG.M04_NUM_BYTES {4} \
-CONFIG.M05_NUM_BYTES {4} \
-CONFIG.M06_NUM_BYTES {4} \
-CONFIG.M07_NUM_BYTES {4} \
-CONFIG.M08_NUM_BYTES {4} \
-CONFIG.M09_NUM_BYTES {4} \
-CONFIG.M10_NUM_BYTES {4} \
-CONFIG.M11_NUM_BYTES {4} \
-CONFIG.M12_NUM_BYTES {4} \
-CONFIG.M13_NUM_BYTES {4} \
-CONFIG.M14_NUM_BYTES {4} \
-CONFIG.M15_NUM_BYTES {4} \
-CONFIG.MAX_PAYLD_BYTES {16} \
-CONFIG.M_SEND_PIPELINE {0} \
-CONFIG.NUM_MI {1} \
-CONFIG.NUM_SI {1} \
-CONFIG.PAYLD_WIDTH {7} \
-CONFIG.S00_NUM_BYTES {16} \
-CONFIG.S01_NUM_BYTES {16} \
-CONFIG.S02_NUM_BYTES {16} \
-CONFIG.S03_NUM_BYTES {16} \
-CONFIG.S04_NUM_BYTES {16} \
-CONFIG.S05_NUM_BYTES {16} \
-CONFIG.S06_NUM_BYTES {16} \
-CONFIG.S07_NUM_BYTES {16} \
-CONFIG.S08_NUM_BYTES {16} \
-CONFIG.S09_NUM_BYTES {16} \
-CONFIG.S10_NUM_BYTES {16} \
-CONFIG.S11_NUM_BYTES {16} \
-CONFIG.S12_NUM_BYTES {16} \
-CONFIG.S13_NUM_BYTES {16} \
-CONFIG.S14_NUM_BYTES {16} \
-CONFIG.S15_NUM_BYTES {16} \
-CONFIG.SC_ROUTE_WIDTH {2} \
-CONFIG.S_LATENCY {1} \
-CONFIG.USER_WIDTH {0} \
+   CONFIG.ACLKEN_CONVERSION {0} \
+   CONFIG.ACLK_RELATIONSHIP {1} \
+   CONFIG.ADDR_WIDTH {32} \
+   CONFIG.CHANNEL {4} \
+   CONFIG.ID_WIDTH {1} \
+   CONFIG.M00_NUM_BYTES {4} \
+   CONFIG.M01_NUM_BYTES {4} \
+   CONFIG.M02_NUM_BYTES {4} \
+   CONFIG.M03_NUM_BYTES {4} \
+   CONFIG.M04_NUM_BYTES {4} \
+   CONFIG.M05_NUM_BYTES {4} \
+   CONFIG.M06_NUM_BYTES {4} \
+   CONFIG.M07_NUM_BYTES {4} \
+   CONFIG.M08_NUM_BYTES {4} \
+   CONFIG.M09_NUM_BYTES {4} \
+   CONFIG.M10_NUM_BYTES {4} \
+   CONFIG.M11_NUM_BYTES {4} \
+   CONFIG.M12_NUM_BYTES {4} \
+   CONFIG.M13_NUM_BYTES {4} \
+   CONFIG.M14_NUM_BYTES {4} \
+   CONFIG.M15_NUM_BYTES {4} \
+   CONFIG.MAX_PAYLD_BYTES {16} \
+   CONFIG.M_SEND_PIPELINE {0} \
+   CONFIG.NUM_MI {1} \
+   CONFIG.NUM_SI {1} \
+   CONFIG.PAYLD_WIDTH {6} \
+   CONFIG.S00_NUM_BYTES {16} \
+   CONFIG.S01_NUM_BYTES {16} \
+   CONFIG.S02_NUM_BYTES {16} \
+   CONFIG.S03_NUM_BYTES {16} \
+   CONFIG.S04_NUM_BYTES {16} \
+   CONFIG.S05_NUM_BYTES {16} \
+   CONFIG.S06_NUM_BYTES {16} \
+   CONFIG.S07_NUM_BYTES {16} \
+   CONFIG.S08_NUM_BYTES {16} \
+   CONFIG.S09_NUM_BYTES {16} \
+   CONFIG.S10_NUM_BYTES {16} \
+   CONFIG.S11_NUM_BYTES {16} \
+   CONFIG.S12_NUM_BYTES {16} \
+   CONFIG.S13_NUM_BYTES {16} \
+   CONFIG.S14_NUM_BYTES {16} \
+   CONFIG.S15_NUM_BYTES {16} \
+   CONFIG.SC_ROUTE_WIDTH {2} \
+   CONFIG.S_LATENCY {1} \
+   CONFIG.USER_WIDTH {0} \
  ] $s00_b_node
 
   # Create instance: s00_r_node, and set properties
   set s00_r_node [ create_bd_cell -type ip -vlnv xilinx.com:ip:sc_node:1.0 s00_r_node ]
   set_property -dict [ list \
-CONFIG.ACLKEN_CONVERSION {0} \
-CONFIG.ACLK_RELATIONSHIP {1} \
-CONFIG.ADDR_WIDTH {32} \
-CONFIG.CHANNEL {0} \
-CONFIG.ID_WIDTH {2} \
-CONFIG.M00_NUM_BYTES {4} \
-CONFIG.M01_NUM_BYTES {4} \
-CONFIG.M02_NUM_BYTES {4} \
-CONFIG.M03_NUM_BYTES {4} \
-CONFIG.M04_NUM_BYTES {4} \
-CONFIG.M05_NUM_BYTES {4} \
-CONFIG.M06_NUM_BYTES {4} \
-CONFIG.M07_NUM_BYTES {4} \
-CONFIG.M08_NUM_BYTES {4} \
-CONFIG.M09_NUM_BYTES {4} \
-CONFIG.M10_NUM_BYTES {4} \
-CONFIG.M11_NUM_BYTES {4} \
-CONFIG.M12_NUM_BYTES {4} \
-CONFIG.M13_NUM_BYTES {4} \
-CONFIG.M14_NUM_BYTES {4} \
-CONFIG.M15_NUM_BYTES {4} \
-CONFIG.MAX_PAYLD_BYTES {16} \
-CONFIG.M_SEND_PIPELINE {0} \
-CONFIG.NUM_MI {1} \
-CONFIG.NUM_SI {1} \
-CONFIG.PAYLD_WIDTH {149} \
-CONFIG.S00_NUM_BYTES {16} \
-CONFIG.S01_NUM_BYTES {16} \
-CONFIG.S02_NUM_BYTES {16} \
-CONFIG.S03_NUM_BYTES {16} \
-CONFIG.S04_NUM_BYTES {16} \
-CONFIG.S05_NUM_BYTES {16} \
-CONFIG.S06_NUM_BYTES {16} \
-CONFIG.S07_NUM_BYTES {16} \
-CONFIG.S08_NUM_BYTES {16} \
-CONFIG.S09_NUM_BYTES {16} \
-CONFIG.S10_NUM_BYTES {16} \
-CONFIG.S11_NUM_BYTES {16} \
-CONFIG.S12_NUM_BYTES {16} \
-CONFIG.S13_NUM_BYTES {16} \
-CONFIG.S14_NUM_BYTES {16} \
-CONFIG.S15_NUM_BYTES {16} \
-CONFIG.SC_ROUTE_WIDTH {2} \
-CONFIG.S_LATENCY {1} \
-CONFIG.USER_BITS_PER_BYTE {0} \
+   CONFIG.ACLKEN_CONVERSION {0} \
+   CONFIG.ACLK_RELATIONSHIP {1} \
+   CONFIG.ADDR_WIDTH {32} \
+   CONFIG.CHANNEL {0} \
+   CONFIG.ID_WIDTH {1} \
+   CONFIG.M00_NUM_BYTES {4} \
+   CONFIG.M01_NUM_BYTES {4} \
+   CONFIG.M02_NUM_BYTES {4} \
+   CONFIG.M03_NUM_BYTES {4} \
+   CONFIG.M04_NUM_BYTES {4} \
+   CONFIG.M05_NUM_BYTES {4} \
+   CONFIG.M06_NUM_BYTES {4} \
+   CONFIG.M07_NUM_BYTES {4} \
+   CONFIG.M08_NUM_BYTES {4} \
+   CONFIG.M09_NUM_BYTES {4} \
+   CONFIG.M10_NUM_BYTES {4} \
+   CONFIG.M11_NUM_BYTES {4} \
+   CONFIG.M12_NUM_BYTES {4} \
+   CONFIG.M13_NUM_BYTES {4} \
+   CONFIG.M14_NUM_BYTES {4} \
+   CONFIG.M15_NUM_BYTES {4} \
+   CONFIG.MAX_PAYLD_BYTES {16} \
+   CONFIG.M_SEND_PIPELINE {0} \
+   CONFIG.NUM_MI {1} \
+   CONFIG.NUM_SI {1} \
+   CONFIG.PAYLD_WIDTH {148} \
+   CONFIG.S00_NUM_BYTES {16} \
+   CONFIG.S01_NUM_BYTES {16} \
+   CONFIG.S02_NUM_BYTES {16} \
+   CONFIG.S03_NUM_BYTES {16} \
+   CONFIG.S04_NUM_BYTES {16} \
+   CONFIG.S05_NUM_BYTES {16} \
+   CONFIG.S06_NUM_BYTES {16} \
+   CONFIG.S07_NUM_BYTES {16} \
+   CONFIG.S08_NUM_BYTES {16} \
+   CONFIG.S09_NUM_BYTES {16} \
+   CONFIG.S10_NUM_BYTES {16} \
+   CONFIG.S11_NUM_BYTES {16} \
+   CONFIG.S12_NUM_BYTES {16} \
+   CONFIG.S13_NUM_BYTES {16} \
+   CONFIG.S14_NUM_BYTES {16} \
+   CONFIG.S15_NUM_BYTES {16} \
+   CONFIG.SC_ROUTE_WIDTH {2} \
+   CONFIG.S_LATENCY {1} \
+   CONFIG.USER_BITS_PER_BYTE {0} \
  ] $s00_r_node
 
   # Create instance: s00_w_node, and set properties
   set s00_w_node [ create_bd_cell -type ip -vlnv xilinx.com:ip:sc_node:1.0 s00_w_node ]
   set_property -dict [ list \
-CONFIG.ACLKEN_CONVERSION {0} \
-CONFIG.ACLK_RELATIONSHIP {1} \
-CONFIG.ADDR_WIDTH {32} \
-CONFIG.CHANNEL {1} \
-CONFIG.ID_WIDTH {2} \
-CONFIG.M00_NUM_BYTES {16} \
-CONFIG.M01_NUM_BYTES {16} \
-CONFIG.M02_NUM_BYTES {16} \
-CONFIG.M03_NUM_BYTES {16} \
-CONFIG.M04_NUM_BYTES {16} \
-CONFIG.M05_NUM_BYTES {16} \
-CONFIG.M06_NUM_BYTES {16} \
-CONFIG.M07_NUM_BYTES {16} \
-CONFIG.M08_NUM_BYTES {16} \
-CONFIG.M09_NUM_BYTES {16} \
-CONFIG.M10_NUM_BYTES {16} \
-CONFIG.M11_NUM_BYTES {16} \
-CONFIG.M12_NUM_BYTES {16} \
-CONFIG.M13_NUM_BYTES {16} \
-CONFIG.M14_NUM_BYTES {16} \
-CONFIG.M15_NUM_BYTES {16} \
-CONFIG.MAX_PAYLD_BYTES {16} \
-CONFIG.M_PIPELINE {0} \
-CONFIG.NUM_MI {1} \
-CONFIG.NUM_SI {1} \
-CONFIG.PAYLD_WIDTH {160} \
-CONFIG.S00_NUM_BYTES {4} \
-CONFIG.S01_NUM_BYTES {4} \
-CONFIG.S02_NUM_BYTES {4} \
-CONFIG.S03_NUM_BYTES {4} \
-CONFIG.S04_NUM_BYTES {4} \
-CONFIG.S05_NUM_BYTES {4} \
-CONFIG.S06_NUM_BYTES {4} \
-CONFIG.S07_NUM_BYTES {4} \
-CONFIG.S08_NUM_BYTES {4} \
-CONFIG.S09_NUM_BYTES {4} \
-CONFIG.S10_NUM_BYTES {4} \
-CONFIG.S11_NUM_BYTES {4} \
-CONFIG.S12_NUM_BYTES {4} \
-CONFIG.S13_NUM_BYTES {4} \
-CONFIG.S14_NUM_BYTES {4} \
-CONFIG.S15_NUM_BYTES {4} \
-CONFIG.SC_ROUTE_WIDTH {1} \
-CONFIG.USER_BITS_PER_BYTE {0} \
+   CONFIG.ACLKEN_CONVERSION {0} \
+   CONFIG.ACLK_RELATIONSHIP {1} \
+   CONFIG.ADDR_WIDTH {32} \
+   CONFIG.CHANNEL {1} \
+   CONFIG.ID_WIDTH {1} \
+   CONFIG.M00_NUM_BYTES {16} \
+   CONFIG.M01_NUM_BYTES {16} \
+   CONFIG.M02_NUM_BYTES {16} \
+   CONFIG.M03_NUM_BYTES {16} \
+   CONFIG.M04_NUM_BYTES {16} \
+   CONFIG.M05_NUM_BYTES {16} \
+   CONFIG.M06_NUM_BYTES {16} \
+   CONFIG.M07_NUM_BYTES {16} \
+   CONFIG.M08_NUM_BYTES {16} \
+   CONFIG.M09_NUM_BYTES {16} \
+   CONFIG.M10_NUM_BYTES {16} \
+   CONFIG.M11_NUM_BYTES {16} \
+   CONFIG.M12_NUM_BYTES {16} \
+   CONFIG.M13_NUM_BYTES {16} \
+   CONFIG.M14_NUM_BYTES {16} \
+   CONFIG.M15_NUM_BYTES {16} \
+   CONFIG.MAX_PAYLD_BYTES {16} \
+   CONFIG.M_PIPELINE {0} \
+   CONFIG.NUM_MI {1} \
+   CONFIG.NUM_SI {1} \
+   CONFIG.PAYLD_WIDTH {160} \
+   CONFIG.S00_NUM_BYTES {4} \
+   CONFIG.S01_NUM_BYTES {4} \
+   CONFIG.S02_NUM_BYTES {4} \
+   CONFIG.S03_NUM_BYTES {4} \
+   CONFIG.S04_NUM_BYTES {4} \
+   CONFIG.S05_NUM_BYTES {4} \
+   CONFIG.S06_NUM_BYTES {4} \
+   CONFIG.S07_NUM_BYTES {4} \
+   CONFIG.S08_NUM_BYTES {4} \
+   CONFIG.S09_NUM_BYTES {4} \
+   CONFIG.S10_NUM_BYTES {4} \
+   CONFIG.S11_NUM_BYTES {4} \
+   CONFIG.S12_NUM_BYTES {4} \
+   CONFIG.S13_NUM_BYTES {4} \
+   CONFIG.S14_NUM_BYTES {4} \
+   CONFIG.S15_NUM_BYTES {4} \
+   CONFIG.SC_ROUTE_WIDTH {1} \
+   CONFIG.USER_BITS_PER_BYTE {0} \
  ] $s00_w_node
 
   # Create interface connections
@@ -917,74 +920,74 @@ proc create_hier_cell_s00_entry_pipeline { parentCell nameHier } {
   # Create instance: s00_mmu, and set properties
   set s00_mmu [ create_bd_cell -type ip -vlnv xilinx.com:ip:sc_mmu:1.0 s00_mmu ]
   set_property -dict [ list \
-CONFIG.ADDR_WIDTH {32} \
-CONFIG.ID_WIDTH {0} \
-CONFIG.IS_CASCADED {0} \
-CONFIG.MSC000_ROUTE {0b1} \
-CONFIG.MSC_ROUTE_WIDTH {1} \
-CONFIG.NUM_MSC {1} \
-CONFIG.NUM_SEG {1} \
-CONFIG.RDATA_WIDTH {32} \
-CONFIG.READ_WRITE_MODE {READ_WRITE} \
-CONFIG.SEG000_BASE_ADDR {0x0000000080000000} \
-CONFIG.SEG000_SECURE_READ {0} \
-CONFIG.SEG000_SECURE_WRITE {0} \
-CONFIG.SEG000_SEP_ROUTE {0b0000000000000000000000000000000000000000000000000000000000000000} \
-CONFIG.SEG000_SIZE {28} \
-CONFIG.SEG000_SUPPORTS_READ {1} \
-CONFIG.SEG000_SUPPORTS_WRITE {1} \
-CONFIG.S_ARUSER_WIDTH {0} \
-CONFIG.S_AWUSER_WIDTH {0} \
-CONFIG.S_BUSER_WIDTH {0} \
-CONFIG.S_PROTOCOL {AXI4} \
-CONFIG.S_RUSER_WIDTH {0} \
-CONFIG.S_WUSER_WIDTH {0} \
-CONFIG.WDATA_WIDTH {32} \
+   CONFIG.ADDR_WIDTH {32} \
+   CONFIG.ID_WIDTH {0} \
+   CONFIG.IS_CASCADED {0} \
+   CONFIG.MSC000_ROUTE {0b1} \
+   CONFIG.MSC_ROUTE_WIDTH {1} \
+   CONFIG.NUM_MSC {1} \
+   CONFIG.NUM_SEG {1} \
+   CONFIG.RDATA_WIDTH {32} \
+   CONFIG.READ_WRITE_MODE {READ_WRITE} \
+   CONFIG.SEG000_BASE_ADDR {0x0000000080000000} \
+   CONFIG.SEG000_SECURE_READ {0} \
+   CONFIG.SEG000_SECURE_WRITE {0} \
+   CONFIG.SEG000_SEP_ROUTE {0b0000000000000000000000000000000000000000000000000000000000000000} \
+   CONFIG.SEG000_SIZE {28} \
+   CONFIG.SEG000_SUPPORTS_READ {1} \
+   CONFIG.SEG000_SUPPORTS_WRITE {1} \
+   CONFIG.S_ARUSER_WIDTH {0} \
+   CONFIG.S_AWUSER_WIDTH {0} \
+   CONFIG.S_BUSER_WIDTH {0} \
+   CONFIG.S_PROTOCOL {AXI4} \
+   CONFIG.S_RUSER_WIDTH {0} \
+   CONFIG.S_WUSER_WIDTH {0} \
+   CONFIG.WDATA_WIDTH {32} \
  ] $s00_mmu
 
   # Create instance: s00_si_converter, and set properties
   set s00_si_converter [ create_bd_cell -type ip -vlnv xilinx.com:ip:sc_si_converter:1.0 s00_si_converter ]
   set_property -dict [ list \
-CONFIG.ADDR_WIDTH {32} \
-CONFIG.HAS_BURST {1} \
-CONFIG.ID_WIDTH {2} \
-CONFIG.IS_CASCADED {0} \
-CONFIG.LIMIT_READ_LENGTH {0} \
-CONFIG.LIMIT_WRITE_LENGTH {0} \
-CONFIG.MAX_RUSER_BITS_PER_BYTE {0} \
-CONFIG.MAX_WUSER_BITS_PER_BYTE {0} \
-CONFIG.MEP_IDENTIFIER_WIDTH {2} \
-CONFIG.MSC000_RDATA_WIDTH {128} \
-CONFIG.MSC000_WDATA_WIDTH {128} \
-CONFIG.NUM_MSC {1} \
-CONFIG.NUM_READ_THREADS {1} \
-CONFIG.NUM_SEG {1} \
-CONFIG.NUM_WRITE_THREADS {1} \
-CONFIG.RDATA_WIDTH {32} \
-CONFIG.READ_WRITE_MODE {READ_WRITE} \
-CONFIG.SEP000_PROTOCOL {AXI4} \
-CONFIG.SEP000_RDATA_WIDTH {128} \
-CONFIG.SEP000_WDATA_WIDTH {128} \
-CONFIG.SUPPORTS_NARROW {0} \
-CONFIG.S_RUSER_BITS_PER_BYTE {0} \
-CONFIG.S_WUSER_BITS_PER_BYTE {0} \
-CONFIG.WDATA_WIDTH {32} \
+   CONFIG.ADDR_WIDTH {32} \
+   CONFIG.HAS_BURST {1} \
+   CONFIG.ID_WIDTH {1} \
+   CONFIG.IS_CASCADED {0} \
+   CONFIG.LIMIT_READ_LENGTH {0} \
+   CONFIG.LIMIT_WRITE_LENGTH {0} \
+   CONFIG.MAX_RUSER_BITS_PER_BYTE {0} \
+   CONFIG.MAX_WUSER_BITS_PER_BYTE {0} \
+   CONFIG.MEP_IDENTIFIER_WIDTH {1} \
+   CONFIG.MSC000_RDATA_WIDTH {128} \
+   CONFIG.MSC000_WDATA_WIDTH {128} \
+   CONFIG.NUM_MSC {1} \
+   CONFIG.NUM_READ_THREADS {1} \
+   CONFIG.NUM_SEG {1} \
+   CONFIG.NUM_WRITE_THREADS {1} \
+   CONFIG.RDATA_WIDTH {32} \
+   CONFIG.READ_WRITE_MODE {READ_WRITE} \
+   CONFIG.SEP000_PROTOCOL {AXI4} \
+   CONFIG.SEP000_RDATA_WIDTH {128} \
+   CONFIG.SEP000_WDATA_WIDTH {128} \
+   CONFIG.SUPPORTS_NARROW {0} \
+   CONFIG.S_RUSER_BITS_PER_BYTE {0} \
+   CONFIG.S_WUSER_BITS_PER_BYTE {0} \
+   CONFIG.WDATA_WIDTH {32} \
  ] $s00_si_converter
 
   # Create instance: s00_transaction_regulator, and set properties
   set s00_transaction_regulator [ create_bd_cell -type ip -vlnv xilinx.com:ip:sc_transaction_regulator:1.0 s00_transaction_regulator ]
   set_property -dict [ list \
-CONFIG.ADDR_WIDTH {32} \
-CONFIG.IS_CASCADED {0} \
-CONFIG.MEP_IDENTIFIER {1} \
-CONFIG.MEP_IDENTIFIER_WIDTH {2} \
-CONFIG.RDATA_WIDTH {32} \
-CONFIG.READ_WRITE_MODE {READ_WRITE} \
-CONFIG.SEP_ROUTE_WIDTH {1} \
-CONFIG.SUPPORTS_READ_DEADLOCK {0} \
-CONFIG.SUPPORTS_WRITE_DEADLOCK {0} \
-CONFIG.S_ID_WIDTH {0} \
-CONFIG.WDATA_WIDTH {32} \
+   CONFIG.ADDR_WIDTH {32} \
+   CONFIG.IS_CASCADED {0} \
+   CONFIG.MEP_IDENTIFIER {0} \
+   CONFIG.MEP_IDENTIFIER_WIDTH {1} \
+   CONFIG.RDATA_WIDTH {32} \
+   CONFIG.READ_WRITE_MODE {READ_WRITE} \
+   CONFIG.SEP_ROUTE_WIDTH {1} \
+   CONFIG.SUPPORTS_READ_DEADLOCK {0} \
+   CONFIG.SUPPORTS_WRITE_DEADLOCK {0} \
+   CONFIG.S_ID_WIDTH {0} \
+   CONFIG.WDATA_WIDTH {32} \
  ] $s00_transaction_regulator
 
   # Create interface connections
@@ -1056,246 +1059,246 @@ proc create_hier_cell_m00_nodes { parentCell nameHier } {
   # Create instance: m00_ar_node, and set properties
   set m00_ar_node [ create_bd_cell -type ip -vlnv xilinx.com:ip:sc_node:1.0 m00_ar_node ]
   set_property -dict [ list \
-CONFIG.ACLK_RELATIONSHIP {0} \
-CONFIG.ADDR_WIDTH {32} \
-CONFIG.CHANNEL {2} \
-CONFIG.ID_WIDTH {2} \
-CONFIG.M00_NUM_BYTES {16} \
-CONFIG.M01_NUM_BYTES {16} \
-CONFIG.M02_NUM_BYTES {16} \
-CONFIG.M03_NUM_BYTES {16} \
-CONFIG.M04_NUM_BYTES {16} \
-CONFIG.M05_NUM_BYTES {16} \
-CONFIG.M06_NUM_BYTES {16} \
-CONFIG.M07_NUM_BYTES {16} \
-CONFIG.M08_NUM_BYTES {16} \
-CONFIG.M09_NUM_BYTES {16} \
-CONFIG.M10_NUM_BYTES {16} \
-CONFIG.M11_NUM_BYTES {16} \
-CONFIG.M12_NUM_BYTES {16} \
-CONFIG.M13_NUM_BYTES {16} \
-CONFIG.M14_NUM_BYTES {16} \
-CONFIG.M15_NUM_BYTES {16} \
-CONFIG.MAX_PAYLD_BYTES {16} \
-CONFIG.M_SEND_PIPELINE {0} \
-CONFIG.NUM_MI {1} \
-CONFIG.NUM_SI {2} \
-CONFIG.PAYLD_WIDTH {140} \
-CONFIG.S00_NUM_BYTES {16} \
-CONFIG.S01_NUM_BYTES {16} \
-CONFIG.S02_NUM_BYTES {16} \
-CONFIG.S03_NUM_BYTES {16} \
-CONFIG.S04_NUM_BYTES {16} \
-CONFIG.S05_NUM_BYTES {16} \
-CONFIG.S06_NUM_BYTES {16} \
-CONFIG.S07_NUM_BYTES {16} \
-CONFIG.S08_NUM_BYTES {16} \
-CONFIG.S09_NUM_BYTES {16} \
-CONFIG.S10_NUM_BYTES {16} \
-CONFIG.S11_NUM_BYTES {16} \
-CONFIG.S12_NUM_BYTES {16} \
-CONFIG.S13_NUM_BYTES {16} \
-CONFIG.S14_NUM_BYTES {16} \
-CONFIG.S15_NUM_BYTES {16} \
-CONFIG.SC_ROUTE_WIDTH {1} \
-CONFIG.S_LATENCY {1} \
-CONFIG.USER_WIDTH {0} \
+   CONFIG.ACLK_RELATIONSHIP {0} \
+   CONFIG.ADDR_WIDTH {32} \
+   CONFIG.CHANNEL {2} \
+   CONFIG.ID_WIDTH {1} \
+   CONFIG.M00_NUM_BYTES {16} \
+   CONFIG.M01_NUM_BYTES {16} \
+   CONFIG.M02_NUM_BYTES {16} \
+   CONFIG.M03_NUM_BYTES {16} \
+   CONFIG.M04_NUM_BYTES {16} \
+   CONFIG.M05_NUM_BYTES {16} \
+   CONFIG.M06_NUM_BYTES {16} \
+   CONFIG.M07_NUM_BYTES {16} \
+   CONFIG.M08_NUM_BYTES {16} \
+   CONFIG.M09_NUM_BYTES {16} \
+   CONFIG.M10_NUM_BYTES {16} \
+   CONFIG.M11_NUM_BYTES {16} \
+   CONFIG.M12_NUM_BYTES {16} \
+   CONFIG.M13_NUM_BYTES {16} \
+   CONFIG.M14_NUM_BYTES {16} \
+   CONFIG.M15_NUM_BYTES {16} \
+   CONFIG.MAX_PAYLD_BYTES {16} \
+   CONFIG.M_SEND_PIPELINE {0} \
+   CONFIG.NUM_MI {1} \
+   CONFIG.NUM_SI {2} \
+   CONFIG.PAYLD_WIDTH {138} \
+   CONFIG.S00_NUM_BYTES {16} \
+   CONFIG.S01_NUM_BYTES {16} \
+   CONFIG.S02_NUM_BYTES {16} \
+   CONFIG.S03_NUM_BYTES {16} \
+   CONFIG.S04_NUM_BYTES {16} \
+   CONFIG.S05_NUM_BYTES {16} \
+   CONFIG.S06_NUM_BYTES {16} \
+   CONFIG.S07_NUM_BYTES {16} \
+   CONFIG.S08_NUM_BYTES {16} \
+   CONFIG.S09_NUM_BYTES {16} \
+   CONFIG.S10_NUM_BYTES {16} \
+   CONFIG.S11_NUM_BYTES {16} \
+   CONFIG.S12_NUM_BYTES {16} \
+   CONFIG.S13_NUM_BYTES {16} \
+   CONFIG.S14_NUM_BYTES {16} \
+   CONFIG.S15_NUM_BYTES {16} \
+   CONFIG.SC_ROUTE_WIDTH {1} \
+   CONFIG.S_LATENCY {1} \
+   CONFIG.USER_WIDTH {0} \
  ] $m00_ar_node
 
   # Create instance: m00_aw_node, and set properties
   set m00_aw_node [ create_bd_cell -type ip -vlnv xilinx.com:ip:sc_node:1.0 m00_aw_node ]
   set_property -dict [ list \
-CONFIG.ACLK_RELATIONSHIP {0} \
-CONFIG.ADDR_WIDTH {32} \
-CONFIG.CHANNEL {3} \
-CONFIG.ID_WIDTH {2} \
-CONFIG.M00_NUM_BYTES {16} \
-CONFIG.M01_NUM_BYTES {16} \
-CONFIG.M02_NUM_BYTES {16} \
-CONFIG.M03_NUM_BYTES {16} \
-CONFIG.M04_NUM_BYTES {16} \
-CONFIG.M05_NUM_BYTES {16} \
-CONFIG.M06_NUM_BYTES {16} \
-CONFIG.M07_NUM_BYTES {16} \
-CONFIG.M08_NUM_BYTES {16} \
-CONFIG.M09_NUM_BYTES {16} \
-CONFIG.M10_NUM_BYTES {16} \
-CONFIG.M11_NUM_BYTES {16} \
-CONFIG.M12_NUM_BYTES {16} \
-CONFIG.M13_NUM_BYTES {16} \
-CONFIG.M14_NUM_BYTES {16} \
-CONFIG.M15_NUM_BYTES {16} \
-CONFIG.MAX_PAYLD_BYTES {16} \
-CONFIG.M_SEND_PIPELINE {0} \
-CONFIG.NUM_MI {1} \
-CONFIG.NUM_SI {2} \
-CONFIG.PAYLD_WIDTH {140} \
-CONFIG.S00_NUM_BYTES {16} \
-CONFIG.S01_NUM_BYTES {16} \
-CONFIG.S02_NUM_BYTES {16} \
-CONFIG.S03_NUM_BYTES {16} \
-CONFIG.S04_NUM_BYTES {16} \
-CONFIG.S05_NUM_BYTES {16} \
-CONFIG.S06_NUM_BYTES {16} \
-CONFIG.S07_NUM_BYTES {16} \
-CONFIG.S08_NUM_BYTES {16} \
-CONFIG.S09_NUM_BYTES {16} \
-CONFIG.S10_NUM_BYTES {16} \
-CONFIG.S11_NUM_BYTES {16} \
-CONFIG.S12_NUM_BYTES {16} \
-CONFIG.S13_NUM_BYTES {16} \
-CONFIG.S14_NUM_BYTES {16} \
-CONFIG.S15_NUM_BYTES {16} \
-CONFIG.SC_ROUTE_WIDTH {1} \
-CONFIG.S_LATENCY {1} \
-CONFIG.USER_WIDTH {0} \
+   CONFIG.ACLK_RELATIONSHIP {0} \
+   CONFIG.ADDR_WIDTH {32} \
+   CONFIG.CHANNEL {3} \
+   CONFIG.ID_WIDTH {1} \
+   CONFIG.M00_NUM_BYTES {16} \
+   CONFIG.M01_NUM_BYTES {16} \
+   CONFIG.M02_NUM_BYTES {16} \
+   CONFIG.M03_NUM_BYTES {16} \
+   CONFIG.M04_NUM_BYTES {16} \
+   CONFIG.M05_NUM_BYTES {16} \
+   CONFIG.M06_NUM_BYTES {16} \
+   CONFIG.M07_NUM_BYTES {16} \
+   CONFIG.M08_NUM_BYTES {16} \
+   CONFIG.M09_NUM_BYTES {16} \
+   CONFIG.M10_NUM_BYTES {16} \
+   CONFIG.M11_NUM_BYTES {16} \
+   CONFIG.M12_NUM_BYTES {16} \
+   CONFIG.M13_NUM_BYTES {16} \
+   CONFIG.M14_NUM_BYTES {16} \
+   CONFIG.M15_NUM_BYTES {16} \
+   CONFIG.MAX_PAYLD_BYTES {16} \
+   CONFIG.M_SEND_PIPELINE {0} \
+   CONFIG.NUM_MI {1} \
+   CONFIG.NUM_SI {2} \
+   CONFIG.PAYLD_WIDTH {138} \
+   CONFIG.S00_NUM_BYTES {16} \
+   CONFIG.S01_NUM_BYTES {16} \
+   CONFIG.S02_NUM_BYTES {16} \
+   CONFIG.S03_NUM_BYTES {16} \
+   CONFIG.S04_NUM_BYTES {16} \
+   CONFIG.S05_NUM_BYTES {16} \
+   CONFIG.S06_NUM_BYTES {16} \
+   CONFIG.S07_NUM_BYTES {16} \
+   CONFIG.S08_NUM_BYTES {16} \
+   CONFIG.S09_NUM_BYTES {16} \
+   CONFIG.S10_NUM_BYTES {16} \
+   CONFIG.S11_NUM_BYTES {16} \
+   CONFIG.S12_NUM_BYTES {16} \
+   CONFIG.S13_NUM_BYTES {16} \
+   CONFIG.S14_NUM_BYTES {16} \
+   CONFIG.S15_NUM_BYTES {16} \
+   CONFIG.SC_ROUTE_WIDTH {1} \
+   CONFIG.S_LATENCY {1} \
+   CONFIG.USER_WIDTH {0} \
  ] $m00_aw_node
 
   # Create instance: m00_b_node, and set properties
   set m00_b_node [ create_bd_cell -type ip -vlnv xilinx.com:ip:sc_node:1.0 m00_b_node ]
   set_property -dict [ list \
-CONFIG.ACLK_RELATIONSHIP {0} \
-CONFIG.ADDR_WIDTH {32} \
-CONFIG.CHANNEL {4} \
-CONFIG.ID_WIDTH {2} \
-CONFIG.M00_NUM_BYTES {16} \
-CONFIG.M01_NUM_BYTES {16} \
-CONFIG.M02_NUM_BYTES {16} \
-CONFIG.M03_NUM_BYTES {16} \
-CONFIG.M04_NUM_BYTES {16} \
-CONFIG.M05_NUM_BYTES {16} \
-CONFIG.M06_NUM_BYTES {16} \
-CONFIG.M07_NUM_BYTES {16} \
-CONFIG.M08_NUM_BYTES {16} \
-CONFIG.M09_NUM_BYTES {16} \
-CONFIG.M10_NUM_BYTES {16} \
-CONFIG.M11_NUM_BYTES {16} \
-CONFIG.M12_NUM_BYTES {16} \
-CONFIG.M13_NUM_BYTES {16} \
-CONFIG.M14_NUM_BYTES {16} \
-CONFIG.M15_NUM_BYTES {16} \
-CONFIG.MAX_PAYLD_BYTES {16} \
-CONFIG.M_PIPELINE {0} \
-CONFIG.NUM_MI {2} \
-CONFIG.NUM_SI {1} \
-CONFIG.PAYLD_WIDTH {7} \
-CONFIG.S00_NUM_BYTES {16} \
-CONFIG.S01_NUM_BYTES {16} \
-CONFIG.S02_NUM_BYTES {16} \
-CONFIG.S03_NUM_BYTES {16} \
-CONFIG.S04_NUM_BYTES {16} \
-CONFIG.S05_NUM_BYTES {16} \
-CONFIG.S06_NUM_BYTES {16} \
-CONFIG.S07_NUM_BYTES {16} \
-CONFIG.S08_NUM_BYTES {16} \
-CONFIG.S09_NUM_BYTES {16} \
-CONFIG.S10_NUM_BYTES {16} \
-CONFIG.S11_NUM_BYTES {16} \
-CONFIG.S12_NUM_BYTES {16} \
-CONFIG.S13_NUM_BYTES {16} \
-CONFIG.S14_NUM_BYTES {16} \
-CONFIG.S15_NUM_BYTES {16} \
-CONFIG.SC_ROUTE_WIDTH {2} \
-CONFIG.USER_WIDTH {0} \
+   CONFIG.ACLK_RELATIONSHIP {0} \
+   CONFIG.ADDR_WIDTH {32} \
+   CONFIG.CHANNEL {4} \
+   CONFIG.ID_WIDTH {1} \
+   CONFIG.M00_NUM_BYTES {16} \
+   CONFIG.M01_NUM_BYTES {16} \
+   CONFIG.M02_NUM_BYTES {16} \
+   CONFIG.M03_NUM_BYTES {16} \
+   CONFIG.M04_NUM_BYTES {16} \
+   CONFIG.M05_NUM_BYTES {16} \
+   CONFIG.M06_NUM_BYTES {16} \
+   CONFIG.M07_NUM_BYTES {16} \
+   CONFIG.M08_NUM_BYTES {16} \
+   CONFIG.M09_NUM_BYTES {16} \
+   CONFIG.M10_NUM_BYTES {16} \
+   CONFIG.M11_NUM_BYTES {16} \
+   CONFIG.M12_NUM_BYTES {16} \
+   CONFIG.M13_NUM_BYTES {16} \
+   CONFIG.M14_NUM_BYTES {16} \
+   CONFIG.M15_NUM_BYTES {16} \
+   CONFIG.MAX_PAYLD_BYTES {16} \
+   CONFIG.M_PIPELINE {0} \
+   CONFIG.NUM_MI {2} \
+   CONFIG.NUM_SI {1} \
+   CONFIG.PAYLD_WIDTH {6} \
+   CONFIG.S00_NUM_BYTES {16} \
+   CONFIG.S01_NUM_BYTES {16} \
+   CONFIG.S02_NUM_BYTES {16} \
+   CONFIG.S03_NUM_BYTES {16} \
+   CONFIG.S04_NUM_BYTES {16} \
+   CONFIG.S05_NUM_BYTES {16} \
+   CONFIG.S06_NUM_BYTES {16} \
+   CONFIG.S07_NUM_BYTES {16} \
+   CONFIG.S08_NUM_BYTES {16} \
+   CONFIG.S09_NUM_BYTES {16} \
+   CONFIG.S10_NUM_BYTES {16} \
+   CONFIG.S11_NUM_BYTES {16} \
+   CONFIG.S12_NUM_BYTES {16} \
+   CONFIG.S13_NUM_BYTES {16} \
+   CONFIG.S14_NUM_BYTES {16} \
+   CONFIG.S15_NUM_BYTES {16} \
+   CONFIG.SC_ROUTE_WIDTH {2} \
+   CONFIG.USER_WIDTH {0} \
  ] $m00_b_node
 
   # Create instance: m00_r_node, and set properties
   set m00_r_node [ create_bd_cell -type ip -vlnv xilinx.com:ip:sc_node:1.0 m00_r_node ]
   set_property -dict [ list \
-CONFIG.ACLK_RELATIONSHIP {0} \
-CONFIG.ADDR_WIDTH {32} \
-CONFIG.CHANNEL {0} \
-CONFIG.ID_WIDTH {2} \
-CONFIG.M00_NUM_BYTES {16} \
-CONFIG.M01_NUM_BYTES {16} \
-CONFIG.M02_NUM_BYTES {16} \
-CONFIG.M03_NUM_BYTES {16} \
-CONFIG.M04_NUM_BYTES {16} \
-CONFIG.M05_NUM_BYTES {16} \
-CONFIG.M06_NUM_BYTES {16} \
-CONFIG.M07_NUM_BYTES {16} \
-CONFIG.M08_NUM_BYTES {16} \
-CONFIG.M09_NUM_BYTES {16} \
-CONFIG.M10_NUM_BYTES {16} \
-CONFIG.M11_NUM_BYTES {16} \
-CONFIG.M12_NUM_BYTES {16} \
-CONFIG.M13_NUM_BYTES {16} \
-CONFIG.M14_NUM_BYTES {16} \
-CONFIG.M15_NUM_BYTES {16} \
-CONFIG.MAX_PAYLD_BYTES {16} \
-CONFIG.M_PIPELINE {0} \
-CONFIG.NUM_MI {2} \
-CONFIG.NUM_SI {1} \
-CONFIG.PAYLD_WIDTH {149} \
-CONFIG.S00_NUM_BYTES {16} \
-CONFIG.S01_NUM_BYTES {16} \
-CONFIG.S02_NUM_BYTES {16} \
-CONFIG.S03_NUM_BYTES {16} \
-CONFIG.S04_NUM_BYTES {16} \
-CONFIG.S05_NUM_BYTES {16} \
-CONFIG.S06_NUM_BYTES {16} \
-CONFIG.S07_NUM_BYTES {16} \
-CONFIG.S08_NUM_BYTES {16} \
-CONFIG.S09_NUM_BYTES {16} \
-CONFIG.S10_NUM_BYTES {16} \
-CONFIG.S11_NUM_BYTES {16} \
-CONFIG.S12_NUM_BYTES {16} \
-CONFIG.S13_NUM_BYTES {16} \
-CONFIG.S14_NUM_BYTES {16} \
-CONFIG.S15_NUM_BYTES {16} \
-CONFIG.SC_ROUTE_WIDTH {2} \
-CONFIG.USER_BITS_PER_BYTE {0} \
-CONFIG.USER_WIDTH {0} \
+   CONFIG.ACLK_RELATIONSHIP {0} \
+   CONFIG.ADDR_WIDTH {32} \
+   CONFIG.CHANNEL {0} \
+   CONFIG.ID_WIDTH {1} \
+   CONFIG.M00_NUM_BYTES {16} \
+   CONFIG.M01_NUM_BYTES {16} \
+   CONFIG.M02_NUM_BYTES {16} \
+   CONFIG.M03_NUM_BYTES {16} \
+   CONFIG.M04_NUM_BYTES {16} \
+   CONFIG.M05_NUM_BYTES {16} \
+   CONFIG.M06_NUM_BYTES {16} \
+   CONFIG.M07_NUM_BYTES {16} \
+   CONFIG.M08_NUM_BYTES {16} \
+   CONFIG.M09_NUM_BYTES {16} \
+   CONFIG.M10_NUM_BYTES {16} \
+   CONFIG.M11_NUM_BYTES {16} \
+   CONFIG.M12_NUM_BYTES {16} \
+   CONFIG.M13_NUM_BYTES {16} \
+   CONFIG.M14_NUM_BYTES {16} \
+   CONFIG.M15_NUM_BYTES {16} \
+   CONFIG.MAX_PAYLD_BYTES {16} \
+   CONFIG.M_PIPELINE {0} \
+   CONFIG.NUM_MI {2} \
+   CONFIG.NUM_SI {1} \
+   CONFIG.PAYLD_WIDTH {148} \
+   CONFIG.S00_NUM_BYTES {16} \
+   CONFIG.S01_NUM_BYTES {16} \
+   CONFIG.S02_NUM_BYTES {16} \
+   CONFIG.S03_NUM_BYTES {16} \
+   CONFIG.S04_NUM_BYTES {16} \
+   CONFIG.S05_NUM_BYTES {16} \
+   CONFIG.S06_NUM_BYTES {16} \
+   CONFIG.S07_NUM_BYTES {16} \
+   CONFIG.S08_NUM_BYTES {16} \
+   CONFIG.S09_NUM_BYTES {16} \
+   CONFIG.S10_NUM_BYTES {16} \
+   CONFIG.S11_NUM_BYTES {16} \
+   CONFIG.S12_NUM_BYTES {16} \
+   CONFIG.S13_NUM_BYTES {16} \
+   CONFIG.S14_NUM_BYTES {16} \
+   CONFIG.S15_NUM_BYTES {16} \
+   CONFIG.SC_ROUTE_WIDTH {2} \
+   CONFIG.USER_BITS_PER_BYTE {0} \
+   CONFIG.USER_WIDTH {0} \
  ] $m00_r_node
 
   # Create instance: m00_w_node, and set properties
   set m00_w_node [ create_bd_cell -type ip -vlnv xilinx.com:ip:sc_node:1.0 m00_w_node ]
   set_property -dict [ list \
-CONFIG.ACLK_RELATIONSHIP {0} \
-CONFIG.ADDR_WIDTH {32} \
-CONFIG.CHANNEL {1} \
-CONFIG.ID_WIDTH {2} \
-CONFIG.M00_NUM_BYTES {16} \
-CONFIG.M01_NUM_BYTES {16} \
-CONFIG.M02_NUM_BYTES {16} \
-CONFIG.M03_NUM_BYTES {16} \
-CONFIG.M04_NUM_BYTES {16} \
-CONFIG.M05_NUM_BYTES {16} \
-CONFIG.M06_NUM_BYTES {16} \
-CONFIG.M07_NUM_BYTES {16} \
-CONFIG.M08_NUM_BYTES {16} \
-CONFIG.M09_NUM_BYTES {16} \
-CONFIG.M10_NUM_BYTES {16} \
-CONFIG.M11_NUM_BYTES {16} \
-CONFIG.M12_NUM_BYTES {16} \
-CONFIG.M13_NUM_BYTES {16} \
-CONFIG.M14_NUM_BYTES {16} \
-CONFIG.M15_NUM_BYTES {16} \
-CONFIG.MAX_PAYLD_BYTES {16} \
-CONFIG.M_SEND_PIPELINE {0} \
-CONFIG.NUM_MI {1} \
-CONFIG.NUM_SI {2} \
-CONFIG.PAYLD_WIDTH {160} \
-CONFIG.S00_NUM_BYTES {16} \
-CONFIG.S01_NUM_BYTES {16} \
-CONFIG.S02_NUM_BYTES {16} \
-CONFIG.S03_NUM_BYTES {16} \
-CONFIG.S04_NUM_BYTES {16} \
-CONFIG.S05_NUM_BYTES {16} \
-CONFIG.S06_NUM_BYTES {16} \
-CONFIG.S07_NUM_BYTES {16} \
-CONFIG.S08_NUM_BYTES {16} \
-CONFIG.S09_NUM_BYTES {16} \
-CONFIG.S10_NUM_BYTES {16} \
-CONFIG.S11_NUM_BYTES {16} \
-CONFIG.S12_NUM_BYTES {16} \
-CONFIG.S13_NUM_BYTES {16} \
-CONFIG.S14_NUM_BYTES {16} \
-CONFIG.S15_NUM_BYTES {16} \
-CONFIG.SC_ROUTE_WIDTH {1} \
-CONFIG.S_LATENCY {1} \
-CONFIG.USER_BITS_PER_BYTE {0} \
-CONFIG.USER_WIDTH {0} \
+   CONFIG.ACLK_RELATIONSHIP {0} \
+   CONFIG.ADDR_WIDTH {32} \
+   CONFIG.CHANNEL {1} \
+   CONFIG.ID_WIDTH {1} \
+   CONFIG.M00_NUM_BYTES {16} \
+   CONFIG.M01_NUM_BYTES {16} \
+   CONFIG.M02_NUM_BYTES {16} \
+   CONFIG.M03_NUM_BYTES {16} \
+   CONFIG.M04_NUM_BYTES {16} \
+   CONFIG.M05_NUM_BYTES {16} \
+   CONFIG.M06_NUM_BYTES {16} \
+   CONFIG.M07_NUM_BYTES {16} \
+   CONFIG.M08_NUM_BYTES {16} \
+   CONFIG.M09_NUM_BYTES {16} \
+   CONFIG.M10_NUM_BYTES {16} \
+   CONFIG.M11_NUM_BYTES {16} \
+   CONFIG.M12_NUM_BYTES {16} \
+   CONFIG.M13_NUM_BYTES {16} \
+   CONFIG.M14_NUM_BYTES {16} \
+   CONFIG.M15_NUM_BYTES {16} \
+   CONFIG.MAX_PAYLD_BYTES {16} \
+   CONFIG.M_SEND_PIPELINE {0} \
+   CONFIG.NUM_MI {1} \
+   CONFIG.NUM_SI {2} \
+   CONFIG.PAYLD_WIDTH {160} \
+   CONFIG.S00_NUM_BYTES {16} \
+   CONFIG.S01_NUM_BYTES {16} \
+   CONFIG.S02_NUM_BYTES {16} \
+   CONFIG.S03_NUM_BYTES {16} \
+   CONFIG.S04_NUM_BYTES {16} \
+   CONFIG.S05_NUM_BYTES {16} \
+   CONFIG.S06_NUM_BYTES {16} \
+   CONFIG.S07_NUM_BYTES {16} \
+   CONFIG.S08_NUM_BYTES {16} \
+   CONFIG.S09_NUM_BYTES {16} \
+   CONFIG.S10_NUM_BYTES {16} \
+   CONFIG.S11_NUM_BYTES {16} \
+   CONFIG.S12_NUM_BYTES {16} \
+   CONFIG.S13_NUM_BYTES {16} \
+   CONFIG.S14_NUM_BYTES {16} \
+   CONFIG.S15_NUM_BYTES {16} \
+   CONFIG.SC_ROUTE_WIDTH {1} \
+   CONFIG.S_LATENCY {1} \
+   CONFIG.USER_BITS_PER_BYTE {0} \
+   CONFIG.USER_WIDTH {0} \
  ] $m00_w_node
 
   # Create interface connections
@@ -1366,33 +1369,31 @@ proc create_hier_cell_m00_exit_pipeline { parentCell nameHier } {
   # Create instance: m00_exit, and set properties
   set m00_exit [ create_bd_cell -type ip -vlnv xilinx.com:ip:sc_exit:1.0 m00_exit ]
   set_property -dict [ list \
-CONFIG.ADDR_WIDTH {28} \
-CONFIG.HAS_BURST {1} \
-CONFIG.HAS_LOCK {0} \
-CONFIG.IS_CASCADED {0} \
-CONFIG.MAX_RUSER_BITS_PER_BYTE {0} \
-CONFIG.MAX_WUSER_BITS_PER_BYTE {0} \
-CONFIG.MEP_IDENTIFIER_WIDTH {2} \
-CONFIG.M_ARUSER_WIDTH {0} \
-CONFIG.M_AWUSER_WIDTH {0} \
-CONFIG.M_BUSER_WIDTH {0} \
-CONFIG.M_ID_WIDTH {0} \
-CONFIG.M_MAX_BURST_LENGTH {1} \
-CONFIG.M_PROTOCOL {AXI4} \
-CONFIG.M_RUSER_BITS_PER_BYTE {0} \
-CONFIG.M_RUSER_WIDTH {0} \
-CONFIG.M_WUSER_BITS_PER_BYTE {0} \
-CONFIG.M_WUSER_WIDTH {0} \
-CONFIG.NUM_MSC {1} \
-CONFIG.RDATA_WIDTH {128} \
-CONFIG.READ_WRITE_MODE {READ_WRITE} \
-CONFIG.SSC000_ROUTE {0b00} \
-CONFIG.SSC001_ROUTE {0b01} \
-CONFIG.SSC002_ROUTE {0b10} \
-CONFIG.SSC003_ROUTE {0b00} \
-CONFIG.SSC_ROUTE_WIDTH {2} \
-CONFIG.S_ID_WIDTH {2} \
-CONFIG.WDATA_WIDTH {128} \
+   CONFIG.ADDR_WIDTH {28} \
+   CONFIG.HAS_BURST {1} \
+   CONFIG.HAS_LOCK {0} \
+   CONFIG.IS_CASCADED {0} \
+   CONFIG.MAX_RUSER_BITS_PER_BYTE {0} \
+   CONFIG.MAX_WUSER_BITS_PER_BYTE {0} \
+   CONFIG.MEP_IDENTIFIER_WIDTH {1} \
+   CONFIG.M_ARUSER_WIDTH {0} \
+   CONFIG.M_AWUSER_WIDTH {0} \
+   CONFIG.M_BUSER_WIDTH {0} \
+   CONFIG.M_ID_WIDTH {0} \
+   CONFIG.M_MAX_BURST_LENGTH {1} \
+   CONFIG.M_PROTOCOL {AXI4} \
+   CONFIG.M_RUSER_BITS_PER_BYTE {0} \
+   CONFIG.M_RUSER_WIDTH {0} \
+   CONFIG.M_WUSER_BITS_PER_BYTE {0} \
+   CONFIG.M_WUSER_WIDTH {0} \
+   CONFIG.NUM_MSC {1} \
+   CONFIG.RDATA_WIDTH {128} \
+   CONFIG.READ_WRITE_MODE {READ_WRITE} \
+   CONFIG.SSC000_ROUTE {0b01} \
+   CONFIG.SSC001_ROUTE {0b10} \
+   CONFIG.SSC_ROUTE_WIDTH {2} \
+   CONFIG.S_ID_WIDTH {1} \
+   CONFIG.WDATA_WIDTH {128} \
  ] $m00_exit
 
   # Create interface connections
@@ -1463,22 +1464,22 @@ proc create_hier_cell_clk_map { parentCell nameHier } {
   # Create instance: psr0, and set properties
   set psr0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:proc_sys_reset:5.0 psr0 ]
   set_property -dict [ list \
-CONFIG.C_AUX_RESET_HIGH {0} \
-CONFIG.C_AUX_RST_WIDTH {1} \
+   CONFIG.C_AUX_RESET_HIGH {0} \
+   CONFIG.C_AUX_RST_WIDTH {1} \
  ] $psr0
 
   # Create instance: psr_aclk, and set properties
   set psr_aclk [ create_bd_cell -type ip -vlnv xilinx.com:ip:proc_sys_reset:5.0 psr_aclk ]
   set_property -dict [ list \
-CONFIG.C_AUX_RESET_HIGH {0} \
-CONFIG.C_AUX_RST_WIDTH {1} \
+   CONFIG.C_AUX_RESET_HIGH {0} \
+   CONFIG.C_AUX_RST_WIDTH {1} \
  ] $psr_aclk
 
   # Create instance: psr_aclk1, and set properties
   set psr_aclk1 [ create_bd_cell -type ip -vlnv xilinx.com:ip:proc_sys_reset:5.0 psr_aclk1 ]
   set_property -dict [ list \
-CONFIG.C_AUX_RESET_HIGH {0} \
-CONFIG.C_AUX_RST_WIDTH {1} \
+   CONFIG.C_AUX_RESET_HIGH {0} \
+   CONFIG.C_AUX_RST_WIDTH {1} \
  ] $psr_aclk1
 
   # Create port connections
@@ -1500,6 +1501,7 @@ CONFIG.C_AUX_RST_WIDTH {1} \
 proc create_root_design { parentCell } {
 
   variable script_folder
+  variable design_name
 
   if { $parentCell eq "" } {
      set parentCell [get_bd_cells /]
@@ -1529,26 +1531,26 @@ proc create_root_design { parentCell } {
   # Create interface ports
   set M00_AXI [ create_bd_intf_port -mode Master -vlnv xilinx.com:interface:aximm_rtl:1.0 M00_AXI ]
   set_property -dict [ list \
-CONFIG.MAX_BURST_LENGTH {1} \
-CONFIG.RUSER_BITS_PER_BYTE {0} \
-CONFIG.SUPPORTS_NARROW_BURST {0} \
-CONFIG.WUSER_BITS_PER_BYTE {0} \
- ] $M00_AXI
+   CONFIG.MAX_BURST_LENGTH {1} \
+   CONFIG.RUSER_BITS_PER_BYTE {0} \
+   CONFIG.SUPPORTS_NARROW_BURST {0} \
+   CONFIG.WUSER_BITS_PER_BYTE {0} \
+   ] $M00_AXI
   set S00_AXI [ create_bd_intf_port -mode Slave -vlnv xilinx.com:interface:aximm_rtl:1.0 S00_AXI ]
   set S01_AXI [ create_bd_intf_port -mode Slave -vlnv xilinx.com:interface:aximm_rtl:1.0 S01_AXI ]
 
   # Create ports
   set aclk [ create_bd_port -dir I -type clk aclk ]
   set_property -dict [ list \
-CONFIG.ASSOCIATED_BUSIF {S00_AXI:S01_AXI} \
+   CONFIG.ASSOCIATED_BUSIF {S00_AXI:S01_AXI} \
  ] $aclk
   set aclk1 [ create_bd_port -dir I -type clk aclk1 ]
   set_property -dict [ list \
-CONFIG.ASSOCIATED_BUSIF {M00_AXI} \
+   CONFIG.ASSOCIATED_BUSIF {M00_AXI} \
  ] $aclk1
   set aresetn [ create_bd_port -dir I -type rst aresetn ]
   set_property -dict [ list \
-CONFIG.POLARITY {ACTIVE_LOW} \
+   CONFIG.POLARITY {ACTIVE_LOW} \
  ] $aresetn
 
   # Create instance: clk_map
@@ -1563,43 +1565,43 @@ CONFIG.POLARITY {ACTIVE_LOW} \
   # Create instance: m00_sc2axi, and set properties
   set m00_sc2axi [ create_bd_cell -type ip -vlnv xilinx.com:ip:sc_sc2axi:1.0 m00_sc2axi ]
   set_property -dict [ list \
-CONFIG.AXI_ADDR_WIDTH {28} \
-CONFIG.AXI_ID_WIDTH {2} \
-CONFIG.AXI_RDATA_WIDTH {128} \
-CONFIG.AXI_WDATA_WIDTH {128} \
-CONFIG.MSC_ROUTE_WIDTH {1} \
-CONFIG.READ_WRITE_MODE {READ_WRITE} \
-CONFIG.SC_ADDR_WIDTH {32} \
-CONFIG.SC_ARUSER_WIDTH {0} \
-CONFIG.SC_AWUSER_WIDTH {0} \
-CONFIG.SC_BUSER_WIDTH {0} \
-CONFIG.SC_ID_WIDTH {2} \
-CONFIG.SC_RDATA_WIDTH {128} \
-CONFIG.SC_RUSER_BITS_PER_BYTE {0} \
-CONFIG.SC_WDATA_WIDTH {128} \
-CONFIG.SC_WUSER_BITS_PER_BYTE {0} \
-CONFIG.SSC_ROUTE_WIDTH {2} \
+   CONFIG.AXI_ADDR_WIDTH {28} \
+   CONFIG.AXI_ID_WIDTH {1} \
+   CONFIG.AXI_RDATA_WIDTH {128} \
+   CONFIG.AXI_WDATA_WIDTH {128} \
+   CONFIG.MSC_ROUTE_WIDTH {1} \
+   CONFIG.READ_WRITE_MODE {READ_WRITE} \
+   CONFIG.SC_ADDR_WIDTH {32} \
+   CONFIG.SC_ARUSER_WIDTH {0} \
+   CONFIG.SC_AWUSER_WIDTH {0} \
+   CONFIG.SC_BUSER_WIDTH {0} \
+   CONFIG.SC_ID_WIDTH {1} \
+   CONFIG.SC_RDATA_WIDTH {128} \
+   CONFIG.SC_RUSER_BITS_PER_BYTE {0} \
+   CONFIG.SC_WDATA_WIDTH {128} \
+   CONFIG.SC_WUSER_BITS_PER_BYTE {0} \
+   CONFIG.SSC_ROUTE_WIDTH {2} \
  ] $m00_sc2axi
 
   # Create instance: s00_axi2sc, and set properties
   set s00_axi2sc [ create_bd_cell -type ip -vlnv xilinx.com:ip:sc_axi2sc:1.0 s00_axi2sc ]
   set_property -dict [ list \
-CONFIG.AXI_ADDR_WIDTH {32} \
-CONFIG.AXI_ID_WIDTH {2} \
-CONFIG.AXI_RDATA_WIDTH {32} \
-CONFIG.AXI_WDATA_WIDTH {32} \
-CONFIG.MSC_ROUTE_WIDTH {1} \
-CONFIG.READ_WRITE_MODE {READ_WRITE} \
-CONFIG.SC_ADDR_WIDTH {32} \
-CONFIG.SC_ARUSER_WIDTH {0} \
-CONFIG.SC_AWUSER_WIDTH {0} \
-CONFIG.SC_BUSER_WIDTH {0} \
-CONFIG.SC_ID_WIDTH {2} \
-CONFIG.SC_RDATA_WIDTH {128} \
-CONFIG.SC_RUSER_BITS_PER_BYTE {0} \
-CONFIG.SC_WDATA_WIDTH {128} \
-CONFIG.SC_WUSER_BITS_PER_BYTE {0} \
-CONFIG.SSC_ROUTE_WIDTH {2} \
+   CONFIG.AXI_ADDR_WIDTH {32} \
+   CONFIG.AXI_ID_WIDTH {1} \
+   CONFIG.AXI_RDATA_WIDTH {32} \
+   CONFIG.AXI_WDATA_WIDTH {32} \
+   CONFIG.MSC_ROUTE_WIDTH {1} \
+   CONFIG.READ_WRITE_MODE {READ_WRITE} \
+   CONFIG.SC_ADDR_WIDTH {32} \
+   CONFIG.SC_ARUSER_WIDTH {0} \
+   CONFIG.SC_AWUSER_WIDTH {0} \
+   CONFIG.SC_BUSER_WIDTH {0} \
+   CONFIG.SC_ID_WIDTH {1} \
+   CONFIG.SC_RDATA_WIDTH {128} \
+   CONFIG.SC_RUSER_BITS_PER_BYTE {0} \
+   CONFIG.SC_WDATA_WIDTH {128} \
+   CONFIG.SC_WUSER_BITS_PER_BYTE {0} \
+   CONFIG.SSC_ROUTE_WIDTH {2} \
  ] $s00_axi2sc
 
   # Create instance: s00_entry_pipeline
@@ -1611,22 +1613,22 @@ CONFIG.SSC_ROUTE_WIDTH {2} \
   # Create instance: s01_axi2sc, and set properties
   set s01_axi2sc [ create_bd_cell -type ip -vlnv xilinx.com:ip:sc_axi2sc:1.0 s01_axi2sc ]
   set_property -dict [ list \
-CONFIG.AXI_ADDR_WIDTH {32} \
-CONFIG.AXI_ID_WIDTH {2} \
-CONFIG.AXI_RDATA_WIDTH {32} \
-CONFIG.AXI_WDATA_WIDTH {32} \
-CONFIG.MSC_ROUTE_WIDTH {1} \
-CONFIG.READ_WRITE_MODE {READ_ONLY} \
-CONFIG.SC_ADDR_WIDTH {32} \
-CONFIG.SC_ARUSER_WIDTH {0} \
-CONFIG.SC_AWUSER_WIDTH {0} \
-CONFIG.SC_BUSER_WIDTH {0} \
-CONFIG.SC_ID_WIDTH {2} \
-CONFIG.SC_RDATA_WIDTH {128} \
-CONFIG.SC_RUSER_BITS_PER_BYTE {0} \
-CONFIG.SC_WDATA_WIDTH {128} \
-CONFIG.SC_WUSER_BITS_PER_BYTE {0} \
-CONFIG.SSC_ROUTE_WIDTH {2} \
+   CONFIG.AXI_ADDR_WIDTH {32} \
+   CONFIG.AXI_ID_WIDTH {1} \
+   CONFIG.AXI_RDATA_WIDTH {32} \
+   CONFIG.AXI_WDATA_WIDTH {32} \
+   CONFIG.MSC_ROUTE_WIDTH {1} \
+   CONFIG.READ_WRITE_MODE {READ_ONLY} \
+   CONFIG.SC_ADDR_WIDTH {32} \
+   CONFIG.SC_ARUSER_WIDTH {0} \
+   CONFIG.SC_AWUSER_WIDTH {0} \
+   CONFIG.SC_BUSER_WIDTH {0} \
+   CONFIG.SC_ID_WIDTH {1} \
+   CONFIG.SC_RDATA_WIDTH {128} \
+   CONFIG.SC_RUSER_BITS_PER_BYTE {0} \
+   CONFIG.SC_WDATA_WIDTH {128} \
+   CONFIG.SC_WUSER_BITS_PER_BYTE {0} \
+   CONFIG.SSC_ROUTE_WIDTH {2} \
  ] $s01_axi2sc
 
   # Create instance: s01_entry_pipeline

@@ -1,8 +1,8 @@
 // Copyright 1986-2017 Xilinx, Inc. All Rights Reserved.
 // --------------------------------------------------------------------------------
-// Tool Version: Vivado v.2017.2.1 (win64) Build 1957588 Wed Aug  9 16:32:24 MDT 2017
-// Date        : Mon Aug 28 12:30:13 2017
-// Host        : WK73 running 64-bit Service Pack 1  (build 7601)
+// Tool Version: Vivado v.2017.3 (win64) Build 2018833 Wed Oct  4 19:58:22 MDT 2017
+// Date        : Wed Dec  6 21:11:26 2017
+// Host        : DESKTOP-9HMNAI5 running 64-bit major release  (build 9200)
 // Command     : write_verilog -force -mode funcsim -rename_top system_auto_cc_0 -prefix
 //               system_auto_cc_0_ system_auto_cc_0_sim_netlist.v
 // Design      : system_auto_cc_0
@@ -48,7 +48,7 @@
 (* P_AXI3 = "1" *) (* P_AXI4 = "0" *) (* P_AXILITE = "2" *) 
 (* P_FULLY_REG = "1" *) (* P_LIGHT_WT = "0" *) (* P_LUTRAM_ASYNC = "12" *) 
 (* P_ROUNDING_OFFSET = "0" *) (* P_SI_LT_MI = "1'b1" *) 
-module system_auto_cc_0_axi_clock_converter_v2_1_12_axi_clock_converter
+module system_auto_cc_0_axi_clock_converter_v2_1_13_axi_clock_converter
    (s_axi_aclk,
     s_axi_aresetn,
     s_axi_awid,
@@ -350,7 +350,7 @@ module system_auto_cc_0_axi_clock_converter_v2_1_12_axi_clock_converter
   assign s_axi_ruser[0] = \<const0> ;
   GND GND
        (.G(\<const0> ));
-  system_auto_cc_0_axi_clock_converter_v2_1_12_lite_async__xdcDup__1 \gen_clock_conv.gen_async_lite_conv.ar_handshake 
+  system_auto_cc_0_axi_clock_converter_v2_1_13_lite_async__xdcDup__1 \gen_clock_conv.gen_async_lite_conv.ar_handshake 
        (.dest_out({m_axi_arprot,m_axi_araddr}),
         .m_axi_aclk(m_axi_aclk),
         .m_axi_aresetn(\gen_clock_conv.gen_async_lite_conv.r_handshake_n_35 ),
@@ -361,7 +361,7 @@ module system_auto_cc_0_axi_clock_converter_v2_1_12_axi_clock_converter
         .s_axi_arready(s_axi_arready),
         .s_axi_arvalid(s_axi_arvalid),
         .src_in({s_axi_arprot,s_axi_araddr}));
-  system_auto_cc_0_axi_clock_converter_v2_1_12_lite_async \gen_clock_conv.gen_async_lite_conv.aw_handshake 
+  system_auto_cc_0_axi_clock_converter_v2_1_13_lite_async \gen_clock_conv.gen_async_lite_conv.aw_handshake 
        (.dest_out({m_axi_awprot,m_axi_awaddr}),
         .m_axi_aclk(m_axi_aclk),
         .m_axi_aresetn(\gen_clock_conv.gen_async_lite_conv.r_handshake_n_35 ),
@@ -372,7 +372,7 @@ module system_auto_cc_0_axi_clock_converter_v2_1_12_axi_clock_converter
         .s_axi_awready(s_axi_awready),
         .s_axi_awvalid(s_axi_awvalid),
         .src_in({s_axi_awprot,s_axi_awaddr}));
-  system_auto_cc_0_axi_clock_converter_v2_1_12_lite_async__parameterized1 \gen_clock_conv.gen_async_lite_conv.b_handshake 
+  system_auto_cc_0_axi_clock_converter_v2_1_13_lite_async__parameterized1 \gen_clock_conv.gen_async_lite_conv.b_handshake 
        (.m_axi_aresetn(\gen_clock_conv.gen_async_lite_conv.r_handshake_n_35 ),
         .m_axi_bready(m_axi_bready),
         .m_axi_bresp(m_axi_bresp),
@@ -383,7 +383,7 @@ module system_auto_cc_0_axi_clock_converter_v2_1_12_axi_clock_converter
         .s_axi_bready(s_axi_bready),
         .s_axi_bresp(s_axi_bresp),
         .s_axi_bvalid(s_axi_bvalid));
-  system_auto_cc_0_axi_clock_converter_v2_1_12_lite_async__parameterized2 \gen_clock_conv.gen_async_lite_conv.r_handshake 
+  system_auto_cc_0_axi_clock_converter_v2_1_13_lite_async__parameterized2 \gen_clock_conv.gen_async_lite_conv.r_handshake 
        (.dest_ack_reg_0(\gen_clock_conv.gen_async_lite_conv.r_handshake_n_37 ),
         .dest_out({s_axi_rresp,s_axi_rdata}),
         .m_axi_aresetn(m_axi_aresetn),
@@ -396,7 +396,7 @@ module system_auto_cc_0_axi_clock_converter_v2_1_12_axi_clock_converter
         .s_axi_rvalid(s_axi_rvalid),
         .src_in({m_axi_rresp,m_axi_rdata}),
         .src_send_reg_0(\gen_clock_conv.gen_async_lite_conv.r_handshake_n_35 ));
-  system_auto_cc_0_axi_clock_converter_v2_1_12_lite_async__parameterized0 \gen_clock_conv.gen_async_lite_conv.w_handshake 
+  system_auto_cc_0_axi_clock_converter_v2_1_13_lite_async__parameterized0 \gen_clock_conv.gen_async_lite_conv.w_handshake 
        (.dest_out({m_axi_wstrb,m_axi_wdata}),
         .m_axi_aclk(m_axi_aclk),
         .m_axi_aresetn(\gen_clock_conv.gen_async_lite_conv.r_handshake_n_35 ),
@@ -409,7 +409,7 @@ module system_auto_cc_0_axi_clock_converter_v2_1_12_axi_clock_converter
         .src_in({s_axi_wstrb,s_axi_wdata}));
 endmodule
 
-module system_auto_cc_0_axi_clock_converter_v2_1_12_lite_async
+module system_auto_cc_0_axi_clock_converter_v2_1_13_lite_async
    (dest_out,
     s_axi_awready,
     m_axi_awvalid,
@@ -476,6 +476,7 @@ module system_auto_cc_0_axi_clock_converter_v2_1_12_lite_async
         .I4(m_axi_awvalid),
         .I5(dest_state[1]),
         .O(\FSM_sequential_dest_state[1]_i_1_n_0 ));
+  (* FSM_ENCODED_STATES = "DEST_IDLE:00,DEST_DRV_VALID:01,DEST_DRV_ACK:10,iSTATE:11" *) 
   (* KEEP = "yes" *) 
   FDRE \FSM_sequential_dest_state_reg[0] 
        (.C(m_axi_aclk),
@@ -483,6 +484,7 @@ module system_auto_cc_0_axi_clock_converter_v2_1_12_lite_async
         .D(\FSM_sequential_dest_state[0]_i_1_n_0 ),
         .Q(dest_state[0]),
         .R(m_axi_aresetn));
+  (* FSM_ENCODED_STATES = "DEST_IDLE:00,DEST_DRV_VALID:01,DEST_DRV_ACK:10,iSTATE:11" *) 
   (* KEEP = "yes" *) 
   FDRE \FSM_sequential_dest_state_reg[1] 
        (.C(m_axi_aclk),
@@ -508,6 +510,7 @@ module system_auto_cc_0_axi_clock_converter_v2_1_12_lite_async
         .I3(src_rcv),
         .I4(src_state[1]),
         .O(\FSM_sequential_src_state[1]_i_1_n_0 ));
+  (* FSM_ENCODED_STATES = "SRC_IDLE:00,SRC_DRV_SEND:01,SRC_WAIT_RCV_DONE:10,iSTATE:11" *) 
   (* KEEP = "yes" *) 
   FDRE \FSM_sequential_src_state_reg[0] 
        (.C(out),
@@ -515,6 +518,7 @@ module system_auto_cc_0_axi_clock_converter_v2_1_12_lite_async
         .D(\FSM_sequential_src_state[0]_i_1_n_0 ),
         .Q(src_state[0]),
         .R(s_axi_aresetn));
+  (* FSM_ENCODED_STATES = "SRC_IDLE:00,SRC_DRV_SEND:01,SRC_WAIT_RCV_DONE:10,iSTATE:11" *) 
   (* KEEP = "yes" *) 
   FDRE \FSM_sequential_src_state_reg[1] 
        (.C(out),
@@ -542,6 +546,7 @@ module system_auto_cc_0_axi_clock_converter_v2_1_12_lite_async
         .R(m_axi_aresetn));
   (* DEST_EXT_HSK = "1" *) 
   (* DEST_SYNC_FF = "2" *) 
+  (* INIT_SYNC_FF = "0" *) 
   (* SIM_ASSERT_CHK = "0" *) 
   (* SRC_SYNC_FF = "2" *) 
   (* VERSION = "0" *) 
@@ -609,8 +614,8 @@ module system_auto_cc_0_axi_clock_converter_v2_1_12_lite_async
         .R(s_axi_aresetn));
 endmodule
 
-(* ORIG_REF_NAME = "axi_clock_converter_v2_1_12_lite_async" *) 
-module system_auto_cc_0_axi_clock_converter_v2_1_12_lite_async__parameterized0
+(* ORIG_REF_NAME = "axi_clock_converter_v2_1_13_lite_async" *) 
+module system_auto_cc_0_axi_clock_converter_v2_1_13_lite_async__parameterized0
    (dest_out,
     s_axi_wready,
     m_axi_wvalid,
@@ -677,6 +682,7 @@ module system_auto_cc_0_axi_clock_converter_v2_1_12_lite_async__parameterized0
         .I4(m_axi_wvalid),
         .I5(dest_state[1]),
         .O(\FSM_sequential_dest_state[1]_i_1__1_n_0 ));
+  (* FSM_ENCODED_STATES = "DEST_IDLE:00,DEST_DRV_VALID:01,DEST_DRV_ACK:10,iSTATE:11" *) 
   (* KEEP = "yes" *) 
   FDRE \FSM_sequential_dest_state_reg[0] 
        (.C(m_axi_aclk),
@@ -684,6 +690,7 @@ module system_auto_cc_0_axi_clock_converter_v2_1_12_lite_async__parameterized0
         .D(\FSM_sequential_dest_state[0]_i_1__1_n_0 ),
         .Q(dest_state[0]),
         .R(m_axi_aresetn));
+  (* FSM_ENCODED_STATES = "DEST_IDLE:00,DEST_DRV_VALID:01,DEST_DRV_ACK:10,iSTATE:11" *) 
   (* KEEP = "yes" *) 
   FDRE \FSM_sequential_dest_state_reg[1] 
        (.C(m_axi_aclk),
@@ -709,6 +716,7 @@ module system_auto_cc_0_axi_clock_converter_v2_1_12_lite_async__parameterized0
         .I3(src_rcv),
         .I4(src_state[1]),
         .O(\FSM_sequential_src_state[1]_i_1__1_n_0 ));
+  (* FSM_ENCODED_STATES = "SRC_IDLE:00,SRC_DRV_SEND:01,SRC_WAIT_RCV_DONE:10,iSTATE:11" *) 
   (* KEEP = "yes" *) 
   FDRE \FSM_sequential_src_state_reg[0] 
        (.C(out),
@@ -716,6 +724,7 @@ module system_auto_cc_0_axi_clock_converter_v2_1_12_lite_async__parameterized0
         .D(\FSM_sequential_src_state[0]_i_1__1_n_0 ),
         .Q(src_state[0]),
         .R(s_axi_aresetn));
+  (* FSM_ENCODED_STATES = "SRC_IDLE:00,SRC_DRV_SEND:01,SRC_WAIT_RCV_DONE:10,iSTATE:11" *) 
   (* KEEP = "yes" *) 
   FDRE \FSM_sequential_src_state_reg[1] 
        (.C(out),
@@ -743,6 +752,7 @@ module system_auto_cc_0_axi_clock_converter_v2_1_12_lite_async__parameterized0
         .R(m_axi_aresetn));
   (* DEST_EXT_HSK = "1" *) 
   (* DEST_SYNC_FF = "2" *) 
+  (* INIT_SYNC_FF = "0" *) 
   (* SIM_ASSERT_CHK = "0" *) 
   (* SRC_SYNC_FF = "2" *) 
   (* VERSION = "0" *) 
@@ -810,8 +820,8 @@ module system_auto_cc_0_axi_clock_converter_v2_1_12_lite_async__parameterized0
         .R(s_axi_aresetn));
 endmodule
 
-(* ORIG_REF_NAME = "axi_clock_converter_v2_1_12_lite_async" *) 
-module system_auto_cc_0_axi_clock_converter_v2_1_12_lite_async__parameterized1
+(* ORIG_REF_NAME = "axi_clock_converter_v2_1_13_lite_async" *) 
+module system_auto_cc_0_axi_clock_converter_v2_1_13_lite_async__parameterized1
    (s_axi_bresp,
     m_axi_bready,
     s_axi_bvalid,
@@ -878,6 +888,7 @@ module system_auto_cc_0_axi_clock_converter_v2_1_12_lite_async__parameterized1
         .I4(s_axi_bvalid),
         .I5(dest_state[1]),
         .O(\FSM_sequential_dest_state[1]_i_1__2_n_0 ));
+  (* FSM_ENCODED_STATES = "DEST_IDLE:00,DEST_DRV_VALID:01,DEST_DRV_ACK:10,iSTATE:11" *) 
   (* KEEP = "yes" *) 
   FDRE \FSM_sequential_dest_state_reg[0] 
        (.C(s_axi_aclk),
@@ -885,6 +896,7 @@ module system_auto_cc_0_axi_clock_converter_v2_1_12_lite_async__parameterized1
         .D(\FSM_sequential_dest_state[0]_i_1__2_n_0 ),
         .Q(dest_state[0]),
         .R(s_axi_aresetn));
+  (* FSM_ENCODED_STATES = "DEST_IDLE:00,DEST_DRV_VALID:01,DEST_DRV_ACK:10,iSTATE:11" *) 
   (* KEEP = "yes" *) 
   FDRE \FSM_sequential_dest_state_reg[1] 
        (.C(s_axi_aclk),
@@ -910,6 +922,7 @@ module system_auto_cc_0_axi_clock_converter_v2_1_12_lite_async__parameterized1
         .I3(src_rcv),
         .I4(src_state[1]),
         .O(\FSM_sequential_src_state[1]_i_1__2_n_0 ));
+  (* FSM_ENCODED_STATES = "SRC_IDLE:00,SRC_DRV_SEND:01,SRC_WAIT_RCV_DONE:10,iSTATE:11" *) 
   (* KEEP = "yes" *) 
   FDRE \FSM_sequential_src_state_reg[0] 
        (.C(out),
@@ -917,6 +930,7 @@ module system_auto_cc_0_axi_clock_converter_v2_1_12_lite_async__parameterized1
         .D(\FSM_sequential_src_state[0]_i_1__2_n_0 ),
         .Q(src_state[0]),
         .R(m_axi_aresetn));
+  (* FSM_ENCODED_STATES = "SRC_IDLE:00,SRC_DRV_SEND:01,SRC_WAIT_RCV_DONE:10,iSTATE:11" *) 
   (* KEEP = "yes" *) 
   FDRE \FSM_sequential_src_state_reg[1] 
        (.C(out),
@@ -944,6 +958,7 @@ module system_auto_cc_0_axi_clock_converter_v2_1_12_lite_async__parameterized1
         .R(s_axi_aresetn));
   (* DEST_EXT_HSK = "1" *) 
   (* DEST_SYNC_FF = "2" *) 
+  (* INIT_SYNC_FF = "0" *) 
   (* SIM_ASSERT_CHK = "0" *) 
   (* SRC_SYNC_FF = "2" *) 
   (* VERSION = "0" *) 
@@ -1011,8 +1026,8 @@ module system_auto_cc_0_axi_clock_converter_v2_1_12_lite_async__parameterized1
         .R(m_axi_aresetn));
 endmodule
 
-(* ORIG_REF_NAME = "axi_clock_converter_v2_1_12_lite_async" *) 
-module system_auto_cc_0_axi_clock_converter_v2_1_12_lite_async__parameterized2
+(* ORIG_REF_NAME = "axi_clock_converter_v2_1_13_lite_async" *) 
+module system_auto_cc_0_axi_clock_converter_v2_1_13_lite_async__parameterized2
    (dest_out,
     m_axi_rready,
     src_send_reg_0,
@@ -1085,6 +1100,7 @@ module system_auto_cc_0_axi_clock_converter_v2_1_12_lite_async__parameterized2
         .I4(s_axi_rvalid),
         .I5(dest_state[1]),
         .O(\FSM_sequential_dest_state[1]_i_1__3_n_0 ));
+  (* FSM_ENCODED_STATES = "DEST_IDLE:00,DEST_DRV_VALID:01,DEST_DRV_ACK:10,iSTATE:11" *) 
   (* KEEP = "yes" *) 
   FDRE \FSM_sequential_dest_state_reg[0] 
        (.C(s_axi_aclk),
@@ -1092,6 +1108,7 @@ module system_auto_cc_0_axi_clock_converter_v2_1_12_lite_async__parameterized2
         .D(\FSM_sequential_dest_state[0]_i_1__3_n_0 ),
         .Q(dest_state[0]),
         .R(dest_ack_reg_0));
+  (* FSM_ENCODED_STATES = "DEST_IDLE:00,DEST_DRV_VALID:01,DEST_DRV_ACK:10,iSTATE:11" *) 
   (* KEEP = "yes" *) 
   FDRE \FSM_sequential_dest_state_reg[1] 
        (.C(s_axi_aclk),
@@ -1117,6 +1134,7 @@ module system_auto_cc_0_axi_clock_converter_v2_1_12_lite_async__parameterized2
         .I3(src_rcv),
         .I4(src_state[1]),
         .O(\FSM_sequential_src_state[1]_i_1__3_n_0 ));
+  (* FSM_ENCODED_STATES = "SRC_IDLE:00,SRC_DRV_SEND:01,SRC_WAIT_RCV_DONE:10,iSTATE:11" *) 
   (* KEEP = "yes" *) 
   FDRE \FSM_sequential_src_state_reg[0] 
        (.C(out),
@@ -1124,6 +1142,7 @@ module system_auto_cc_0_axi_clock_converter_v2_1_12_lite_async__parameterized2
         .D(\FSM_sequential_src_state[0]_i_1__3_n_0 ),
         .Q(src_state[0]),
         .R(src_send_reg_0));
+  (* FSM_ENCODED_STATES = "SRC_IDLE:00,SRC_DRV_SEND:01,SRC_WAIT_RCV_DONE:10,iSTATE:11" *) 
   (* KEEP = "yes" *) 
   FDRE \FSM_sequential_src_state_reg[1] 
        (.C(out),
@@ -1151,6 +1170,7 @@ module system_auto_cc_0_axi_clock_converter_v2_1_12_lite_async__parameterized2
         .R(dest_ack_reg_0));
   (* DEST_EXT_HSK = "1" *) 
   (* DEST_SYNC_FF = "2" *) 
+  (* INIT_SYNC_FF = "0" *) 
   (* SIM_ASSERT_CHK = "0" *) 
   (* SRC_SYNC_FF = "2" *) 
   (* VERSION = "0" *) 
@@ -1228,8 +1248,8 @@ module system_auto_cc_0_axi_clock_converter_v2_1_12_lite_async__parameterized2
         .R(src_send_reg_0));
 endmodule
 
-(* ORIG_REF_NAME = "axi_clock_converter_v2_1_12_lite_async" *) 
-module system_auto_cc_0_axi_clock_converter_v2_1_12_lite_async__xdcDup__1
+(* ORIG_REF_NAME = "axi_clock_converter_v2_1_13_lite_async" *) 
+module system_auto_cc_0_axi_clock_converter_v2_1_13_lite_async__xdcDup__1
    (dest_out,
     s_axi_arready,
     m_axi_arvalid,
@@ -1296,6 +1316,7 @@ module system_auto_cc_0_axi_clock_converter_v2_1_12_lite_async__xdcDup__1
         .I4(m_axi_arvalid),
         .I5(dest_state[1]),
         .O(\FSM_sequential_dest_state[1]_i_1__0_n_0 ));
+  (* FSM_ENCODED_STATES = "DEST_IDLE:00,DEST_DRV_VALID:01,DEST_DRV_ACK:10,iSTATE:11" *) 
   (* KEEP = "yes" *) 
   FDRE \FSM_sequential_dest_state_reg[0] 
        (.C(m_axi_aclk),
@@ -1303,6 +1324,7 @@ module system_auto_cc_0_axi_clock_converter_v2_1_12_lite_async__xdcDup__1
         .D(\FSM_sequential_dest_state[0]_i_1__0_n_0 ),
         .Q(dest_state[0]),
         .R(m_axi_aresetn));
+  (* FSM_ENCODED_STATES = "DEST_IDLE:00,DEST_DRV_VALID:01,DEST_DRV_ACK:10,iSTATE:11" *) 
   (* KEEP = "yes" *) 
   FDRE \FSM_sequential_dest_state_reg[1] 
        (.C(m_axi_aclk),
@@ -1328,6 +1350,7 @@ module system_auto_cc_0_axi_clock_converter_v2_1_12_lite_async__xdcDup__1
         .I3(src_rcv),
         .I4(src_state[1]),
         .O(\FSM_sequential_src_state[1]_i_1__0_n_0 ));
+  (* FSM_ENCODED_STATES = "SRC_IDLE:00,SRC_DRV_SEND:01,SRC_WAIT_RCV_DONE:10,iSTATE:11" *) 
   (* KEEP = "yes" *) 
   FDRE \FSM_sequential_src_state_reg[0] 
        (.C(out),
@@ -1335,6 +1358,7 @@ module system_auto_cc_0_axi_clock_converter_v2_1_12_lite_async__xdcDup__1
         .D(\FSM_sequential_src_state[0]_i_1__0_n_0 ),
         .Q(src_state[0]),
         .R(s_axi_aresetn));
+  (* FSM_ENCODED_STATES = "SRC_IDLE:00,SRC_DRV_SEND:01,SRC_WAIT_RCV_DONE:10,iSTATE:11" *) 
   (* KEEP = "yes" *) 
   FDRE \FSM_sequential_src_state_reg[1] 
        (.C(out),
@@ -1362,6 +1386,7 @@ module system_auto_cc_0_axi_clock_converter_v2_1_12_lite_async__xdcDup__1
         .R(m_axi_aresetn));
   (* DEST_EXT_HSK = "1" *) 
   (* DEST_SYNC_FF = "2" *) 
+  (* INIT_SYNC_FF = "0" *) 
   (* SIM_ASSERT_CHK = "0" *) 
   (* SRC_SYNC_FF = "2" *) 
   (* VERSION = "0" *) 
@@ -1429,7 +1454,7 @@ module system_auto_cc_0_axi_clock_converter_v2_1_12_lite_async__xdcDup__1
         .R(s_axi_aresetn));
 endmodule
 
-(* CHECK_LICENSE_TYPE = "system_auto_cc_0,axi_clock_converter_v2_1_12_axi_clock_converter,{}" *) (* DowngradeIPIdentifiedWarnings = "yes" *) (* X_CORE_INFO = "axi_clock_converter_v2_1_12_axi_clock_converter,Vivado 2017.2.1" *) 
+(* CHECK_LICENSE_TYPE = "system_auto_cc_0,axi_clock_converter_v2_1_13_axi_clock_converter,{}" *) (* DowngradeIPIdentifiedWarnings = "yes" *) (* X_CORE_INFO = "axi_clock_converter_v2_1_13_axi_clock_converter,Vivado 2017.3" *) 
 (* NotValidForBitStream *)
 module system_auto_cc_0
    (s_axi_aclk,
@@ -1474,8 +1499,8 @@ module system_auto_cc_0
     m_axi_rresp,
     m_axi_rvalid,
     m_axi_rready);
-  (* X_INTERFACE_INFO = "xilinx.com:signal:clock:1.0 SI_CLK CLK" *) input s_axi_aclk;
-  (* X_INTERFACE_INFO = "xilinx.com:signal:reset:1.0 SI_RST RST" *) input s_axi_aresetn;
+  (* X_INTERFACE_INFO = "xilinx.com:signal:clock:1.0 SI_CLK CLK" *) (* X_INTERFACE_PARAMETER = "XIL_INTERFACENAME SI_CLK, FREQ_HZ 100000000, PHASE 0.0, CLK_DOMAIN /clk_wiz_0_clk_out1, ASSOCIATED_BUSIF S_AXI, ASSOCIATED_RESET S_AXI_ARESETN" *) input s_axi_aclk;
+  (* X_INTERFACE_INFO = "xilinx.com:signal:reset:1.0 SI_RST RST" *) (* X_INTERFACE_PARAMETER = "XIL_INTERFACENAME SI_RST, POLARITY ACTIVE_LOW, TYPE INTERCONNECT" *) input s_axi_aresetn;
   (* X_INTERFACE_INFO = "xilinx.com:interface:aximm:1.0 S_AXI AWADDR" *) input [10:0]s_axi_awaddr;
   (* X_INTERFACE_INFO = "xilinx.com:interface:aximm:1.0 S_AXI AWPROT" *) input [2:0]s_axi_awprot;
   (* X_INTERFACE_INFO = "xilinx.com:interface:aximm:1.0 S_AXI AWVALID" *) input s_axi_awvalid;
@@ -1494,9 +1519,9 @@ module system_auto_cc_0
   (* X_INTERFACE_INFO = "xilinx.com:interface:aximm:1.0 S_AXI RDATA" *) output [31:0]s_axi_rdata;
   (* X_INTERFACE_INFO = "xilinx.com:interface:aximm:1.0 S_AXI RRESP" *) output [1:0]s_axi_rresp;
   (* X_INTERFACE_INFO = "xilinx.com:interface:aximm:1.0 S_AXI RVALID" *) output s_axi_rvalid;
-  (* X_INTERFACE_INFO = "xilinx.com:interface:aximm:1.0 S_AXI RREADY" *) input s_axi_rready;
-  (* X_INTERFACE_INFO = "xilinx.com:signal:clock:1.0 MI_CLK CLK" *) input m_axi_aclk;
-  (* X_INTERFACE_INFO = "xilinx.com:signal:reset:1.0 MI_RST RST" *) input m_axi_aresetn;
+  (* X_INTERFACE_INFO = "xilinx.com:interface:aximm:1.0 S_AXI RREADY" *) (* X_INTERFACE_PARAMETER = "XIL_INTERFACENAME S_AXI, DATA_WIDTH 32, PROTOCOL AXI4LITE, FREQ_HZ 100000000, ID_WIDTH 0, ADDR_WIDTH 11, AWUSER_WIDTH 0, ARUSER_WIDTH 0, WUSER_WIDTH 0, RUSER_WIDTH 0, BUSER_WIDTH 0, READ_WRITE_MODE READ_WRITE, HAS_BURST 0, HAS_LOCK 0, HAS_PROT 1, HAS_CACHE 0, HAS_QOS 0, HAS_REGION 0, HAS_WSTRB 1, HAS_BRESP 1, HAS_RRESP 1, SUPPORTS_NARROW_BURST 0, NUM_READ_OUTSTANDING 1, NUM_WRITE_OUTSTANDING 1, MAX_BURST_LENGTH 1, PHASE 0.0, CLK_DOMAIN /clk_wiz_0_clk_out1, NUM_READ_THREADS 1, NUM_WRITE_THREADS 1, RUSER_BITS_PER_BYTE 0, WUSER_BITS_PER_BYTE 0" *) input s_axi_rready;
+  (* X_INTERFACE_INFO = "xilinx.com:signal:clock:1.0 MI_CLK CLK" *) (* X_INTERFACE_PARAMETER = "XIL_INTERFACENAME MI_CLK, FREQ_HZ 81247969, PHASE 0, CLK_DOMAIN system_mig_7series_0_0_ui_clk, ASSOCIATED_BUSIF M_AXI, ASSOCIATED_RESET M_AXI_ARESETN" *) input m_axi_aclk;
+  (* X_INTERFACE_INFO = "xilinx.com:signal:reset:1.0 MI_RST RST" *) (* X_INTERFACE_PARAMETER = "XIL_INTERFACENAME MI_RST, POLARITY ACTIVE_LOW, TYPE INTERCONNECT" *) input m_axi_aresetn;
   (* X_INTERFACE_INFO = "xilinx.com:interface:aximm:1.0 M_AXI AWADDR" *) output [10:0]m_axi_awaddr;
   (* X_INTERFACE_INFO = "xilinx.com:interface:aximm:1.0 M_AXI AWPROT" *) output [2:0]m_axi_awprot;
   (* X_INTERFACE_INFO = "xilinx.com:interface:aximm:1.0 M_AXI AWVALID" *) output m_axi_awvalid;
@@ -1515,7 +1540,7 @@ module system_auto_cc_0
   (* X_INTERFACE_INFO = "xilinx.com:interface:aximm:1.0 M_AXI RDATA" *) input [31:0]m_axi_rdata;
   (* X_INTERFACE_INFO = "xilinx.com:interface:aximm:1.0 M_AXI RRESP" *) input [1:0]m_axi_rresp;
   (* X_INTERFACE_INFO = "xilinx.com:interface:aximm:1.0 M_AXI RVALID" *) input m_axi_rvalid;
-  (* X_INTERFACE_INFO = "xilinx.com:interface:aximm:1.0 M_AXI RREADY" *) output m_axi_rready;
+  (* X_INTERFACE_INFO = "xilinx.com:interface:aximm:1.0 M_AXI RREADY" *) (* X_INTERFACE_PARAMETER = "XIL_INTERFACENAME M_AXI, DATA_WIDTH 32, PROTOCOL AXI4LITE, FREQ_HZ 81247969, ID_WIDTH 0, ADDR_WIDTH 11, AWUSER_WIDTH 0, ARUSER_WIDTH 0, WUSER_WIDTH 0, RUSER_WIDTH 0, BUSER_WIDTH 0, READ_WRITE_MODE READ_WRITE, HAS_BURST 0, HAS_LOCK 0, HAS_PROT 1, HAS_CACHE 0, HAS_QOS 0, HAS_REGION 0, HAS_WSTRB 1, HAS_BRESP 1, HAS_RRESP 1, SUPPORTS_NARROW_BURST 0, NUM_READ_OUTSTANDING 1, NUM_WRITE_OUTSTANDING 1, MAX_BURST_LENGTH 1, PHASE 0, CLK_DOMAIN system_mig_7series_0_0_ui_clk, NUM_READ_THREADS 1, NUM_WRITE_THREADS 1, RUSER_BITS_PER_BYTE 0, WUSER_BITS_PER_BYTE 0" *) output m_axi_rready;
 
   wire m_axi_aclk;
   wire [10:0]m_axi_araddr;
@@ -1693,7 +1718,7 @@ module system_auto_cc_0
   (* P_LUTRAM_ASYNC = "12" *) 
   (* P_ROUNDING_OFFSET = "0" *) 
   (* P_SI_LT_MI = "1'b1" *) 
-  system_auto_cc_0_axi_clock_converter_v2_1_12_axi_clock_converter inst
+  system_auto_cc_0_axi_clock_converter_v2_1_13_axi_clock_converter inst
        (.m_axi_aclk(m_axi_aclk),
         .m_axi_araddr(m_axi_araddr),
         .m_axi_arburst(NLW_inst_m_axi_arburst_UNCONNECTED[1:0]),
@@ -1790,9 +1815,9 @@ module system_auto_cc_0
         .s_axi_wvalid(s_axi_wvalid));
 endmodule
 
-(* DEST_EXT_HSK = "1" *) (* DEST_SYNC_FF = "2" *) (* SIM_ASSERT_CHK = "0" *) 
-(* SRC_SYNC_FF = "2" *) (* VERSION = "0" *) (* WIDTH = "14" *) 
-(* XPM_MODULE = "TRUE" *) (* xpm_cdc = "HANDSHAKE" *) 
+(* DEST_EXT_HSK = "1" *) (* DEST_SYNC_FF = "2" *) (* INIT_SYNC_FF = "0" *) 
+(* SIM_ASSERT_CHK = "0" *) (* SRC_SYNC_FF = "2" *) (* VERSION = "0" *) 
+(* WIDTH = "14" *) (* XPM_MODULE = "TRUE" *) (* xpm_cdc = "HANDSHAKE" *) 
 module system_auto_cc_0_xpm_cdc_handshake
    (src_clk,
     src_in,
@@ -2046,6 +2071,7 @@ module system_auto_cc_0_xpm_cdc_handshake
         .Q(src_sendd_ff),
         .R(1'b0));
   (* DEST_SYNC_FF = "2" *) 
+  (* INIT_SYNC_FF = "0" *) 
   (* SIM_ASSERT_CHK = "0" *) 
   (* SRC_INPUT_REG = "0" *) 
   (* VERSION = "0" *) 
@@ -2057,6 +2083,7 @@ module system_auto_cc_0_xpm_cdc_handshake
         .src_clk(dest_clk),
         .src_in(dest_ack));
   (* DEST_SYNC_FF = "2" *) 
+  (* INIT_SYNC_FF = "0" *) 
   (* SIM_ASSERT_CHK = "0" *) 
   (* SRC_INPUT_REG = "0" *) 
   (* VERSION = "0" *) 
@@ -2069,9 +2096,10 @@ module system_auto_cc_0_xpm_cdc_handshake
         .src_in(src_sendd_ff));
 endmodule
 
-(* DEST_EXT_HSK = "1" *) (* DEST_SYNC_FF = "2" *) (* ORIG_REF_NAME = "xpm_cdc_handshake" *) 
-(* SIM_ASSERT_CHK = "0" *) (* SRC_SYNC_FF = "2" *) (* VERSION = "0" *) 
-(* WIDTH = "36" *) (* XPM_MODULE = "TRUE" *) (* xpm_cdc = "HANDSHAKE" *) 
+(* DEST_EXT_HSK = "1" *) (* DEST_SYNC_FF = "2" *) (* INIT_SYNC_FF = "0" *) 
+(* ORIG_REF_NAME = "xpm_cdc_handshake" *) (* SIM_ASSERT_CHK = "0" *) (* SRC_SYNC_FF = "2" *) 
+(* VERSION = "0" *) (* WIDTH = "36" *) (* XPM_MODULE = "TRUE" *) 
+(* xpm_cdc = "HANDSHAKE" *) 
 module system_auto_cc_0_xpm_cdc_handshake__parameterized0
    (src_clk,
     src_in,
@@ -2633,6 +2661,7 @@ module system_auto_cc_0_xpm_cdc_handshake__parameterized0
         .Q(src_sendd_ff),
         .R(1'b0));
   (* DEST_SYNC_FF = "2" *) 
+  (* INIT_SYNC_FF = "0" *) 
   (* SIM_ASSERT_CHK = "0" *) 
   (* SRC_INPUT_REG = "0" *) 
   (* VERSION = "0" *) 
@@ -2644,6 +2673,7 @@ module system_auto_cc_0_xpm_cdc_handshake__parameterized0
         .src_clk(dest_clk),
         .src_in(dest_ack));
   (* DEST_SYNC_FF = "2" *) 
+  (* INIT_SYNC_FF = "0" *) 
   (* SIM_ASSERT_CHK = "0" *) 
   (* SRC_INPUT_REG = "0" *) 
   (* VERSION = "0" *) 
@@ -2656,9 +2686,10 @@ module system_auto_cc_0_xpm_cdc_handshake__parameterized0
         .src_in(src_sendd_ff));
 endmodule
 
-(* DEST_EXT_HSK = "1" *) (* DEST_SYNC_FF = "2" *) (* ORIG_REF_NAME = "xpm_cdc_handshake" *) 
-(* SIM_ASSERT_CHK = "0" *) (* SRC_SYNC_FF = "2" *) (* VERSION = "0" *) 
-(* WIDTH = "2" *) (* XPM_MODULE = "TRUE" *) (* xpm_cdc = "HANDSHAKE" *) 
+(* DEST_EXT_HSK = "1" *) (* DEST_SYNC_FF = "2" *) (* INIT_SYNC_FF = "0" *) 
+(* ORIG_REF_NAME = "xpm_cdc_handshake" *) (* SIM_ASSERT_CHK = "0" *) (* SRC_SYNC_FF = "2" *) 
+(* VERSION = "0" *) (* WIDTH = "2" *) (* XPM_MODULE = "TRUE" *) 
+(* xpm_cdc = "HANDSHAKE" *) 
 module system_auto_cc_0_xpm_cdc_handshake__parameterized1
    (src_clk,
     src_in,
@@ -2754,6 +2785,7 @@ module system_auto_cc_0_xpm_cdc_handshake__parameterized1
         .Q(src_sendd_ff),
         .R(1'b0));
   (* DEST_SYNC_FF = "2" *) 
+  (* INIT_SYNC_FF = "0" *) 
   (* SIM_ASSERT_CHK = "0" *) 
   (* SRC_INPUT_REG = "0" *) 
   (* VERSION = "0" *) 
@@ -2765,6 +2797,7 @@ module system_auto_cc_0_xpm_cdc_handshake__parameterized1
         .src_clk(dest_clk),
         .src_in(dest_ack));
   (* DEST_SYNC_FF = "2" *) 
+  (* INIT_SYNC_FF = "0" *) 
   (* SIM_ASSERT_CHK = "0" *) 
   (* SRC_INPUT_REG = "0" *) 
   (* VERSION = "0" *) 
@@ -2777,9 +2810,10 @@ module system_auto_cc_0_xpm_cdc_handshake__parameterized1
         .src_in(src_sendd_ff));
 endmodule
 
-(* DEST_EXT_HSK = "1" *) (* DEST_SYNC_FF = "2" *) (* ORIG_REF_NAME = "xpm_cdc_handshake" *) 
-(* SIM_ASSERT_CHK = "0" *) (* SRC_SYNC_FF = "2" *) (* VERSION = "0" *) 
-(* WIDTH = "34" *) (* XPM_MODULE = "TRUE" *) (* xpm_cdc = "HANDSHAKE" *) 
+(* DEST_EXT_HSK = "1" *) (* DEST_SYNC_FF = "2" *) (* INIT_SYNC_FF = "0" *) 
+(* ORIG_REF_NAME = "xpm_cdc_handshake" *) (* SIM_ASSERT_CHK = "0" *) (* SRC_SYNC_FF = "2" *) 
+(* VERSION = "0" *) (* WIDTH = "34" *) (* XPM_MODULE = "TRUE" *) 
+(* xpm_cdc = "HANDSHAKE" *) 
 module system_auto_cc_0_xpm_cdc_handshake__parameterized2
    (src_clk,
     src_in,
@@ -3313,6 +3347,7 @@ module system_auto_cc_0_xpm_cdc_handshake__parameterized2
         .Q(src_sendd_ff),
         .R(1'b0));
   (* DEST_SYNC_FF = "2" *) 
+  (* INIT_SYNC_FF = "0" *) 
   (* SIM_ASSERT_CHK = "0" *) 
   (* SRC_INPUT_REG = "0" *) 
   (* VERSION = "0" *) 
@@ -3324,6 +3359,7 @@ module system_auto_cc_0_xpm_cdc_handshake__parameterized2
         .src_clk(dest_clk),
         .src_in(dest_ack));
   (* DEST_SYNC_FF = "2" *) 
+  (* INIT_SYNC_FF = "0" *) 
   (* SIM_ASSERT_CHK = "0" *) 
   (* SRC_INPUT_REG = "0" *) 
   (* VERSION = "0" *) 
@@ -3336,9 +3372,10 @@ module system_auto_cc_0_xpm_cdc_handshake__parameterized2
         .src_in(src_sendd_ff));
 endmodule
 
-(* DEST_EXT_HSK = "1" *) (* DEST_SYNC_FF = "2" *) (* ORIG_REF_NAME = "xpm_cdc_handshake" *) 
-(* SIM_ASSERT_CHK = "0" *) (* SRC_SYNC_FF = "2" *) (* VERSION = "0" *) 
-(* WIDTH = "14" *) (* XPM_MODULE = "TRUE" *) (* xpm_cdc = "HANDSHAKE" *) 
+(* DEST_EXT_HSK = "1" *) (* DEST_SYNC_FF = "2" *) (* INIT_SYNC_FF = "0" *) 
+(* ORIG_REF_NAME = "xpm_cdc_handshake" *) (* SIM_ASSERT_CHK = "0" *) (* SRC_SYNC_FF = "2" *) 
+(* VERSION = "0" *) (* WIDTH = "14" *) (* XPM_MODULE = "TRUE" *) 
+(* xpm_cdc = "HANDSHAKE" *) 
 module system_auto_cc_0_xpm_cdc_handshake__xdcDup__1
    (src_clk,
     src_in,
@@ -3592,6 +3629,7 @@ module system_auto_cc_0_xpm_cdc_handshake__xdcDup__1
         .Q(src_sendd_ff),
         .R(1'b0));
   (* DEST_SYNC_FF = "2" *) 
+  (* INIT_SYNC_FF = "0" *) 
   (* SIM_ASSERT_CHK = "0" *) 
   (* SRC_INPUT_REG = "0" *) 
   (* VERSION = "0" *) 
@@ -3603,6 +3641,7 @@ module system_auto_cc_0_xpm_cdc_handshake__xdcDup__1
         .src_clk(dest_clk),
         .src_in(dest_ack));
   (* DEST_SYNC_FF = "2" *) 
+  (* INIT_SYNC_FF = "0" *) 
   (* SIM_ASSERT_CHK = "0" *) 
   (* SRC_INPUT_REG = "0" *) 
   (* VERSION = "0" *) 
@@ -3615,8 +3654,9 @@ module system_auto_cc_0_xpm_cdc_handshake__xdcDup__1
         .src_in(src_sendd_ff));
 endmodule
 
-(* DEST_SYNC_FF = "2" *) (* SIM_ASSERT_CHK = "0" *) (* SRC_INPUT_REG = "0" *) 
-(* VERSION = "0" *) (* XPM_MODULE = "TRUE" *) (* xpm_cdc = "SINGLE" *) 
+(* DEST_SYNC_FF = "2" *) (* INIT_SYNC_FF = "0" *) (* SIM_ASSERT_CHK = "0" *) 
+(* SRC_INPUT_REG = "0" *) (* VERSION = "0" *) (* XPM_MODULE = "TRUE" *) 
+(* xpm_cdc = "SINGLE" *) 
 module system_auto_cc_0_xpm_cdc_single
    (src_clk,
     src_in,
@@ -3650,9 +3690,9 @@ module system_auto_cc_0_xpm_cdc_single
         .R(1'b0));
 endmodule
 
-(* DEST_SYNC_FF = "2" *) (* ORIG_REF_NAME = "xpm_cdc_single" *) (* SIM_ASSERT_CHK = "0" *) 
-(* SRC_INPUT_REG = "0" *) (* VERSION = "0" *) (* XPM_MODULE = "TRUE" *) 
-(* xpm_cdc = "SINGLE" *) 
+(* DEST_SYNC_FF = "2" *) (* INIT_SYNC_FF = "0" *) (* ORIG_REF_NAME = "xpm_cdc_single" *) 
+(* SIM_ASSERT_CHK = "0" *) (* SRC_INPUT_REG = "0" *) (* VERSION = "0" *) 
+(* XPM_MODULE = "TRUE" *) (* xpm_cdc = "SINGLE" *) 
 module system_auto_cc_0_xpm_cdc_single__10
    (src_clk,
     src_in,
@@ -3686,9 +3726,9 @@ module system_auto_cc_0_xpm_cdc_single__10
         .R(1'b0));
 endmodule
 
-(* DEST_SYNC_FF = "2" *) (* ORIG_REF_NAME = "xpm_cdc_single" *) (* SIM_ASSERT_CHK = "0" *) 
-(* SRC_INPUT_REG = "0" *) (* VERSION = "0" *) (* XPM_MODULE = "TRUE" *) 
-(* xpm_cdc = "SINGLE" *) 
+(* DEST_SYNC_FF = "2" *) (* INIT_SYNC_FF = "0" *) (* ORIG_REF_NAME = "xpm_cdc_single" *) 
+(* SIM_ASSERT_CHK = "0" *) (* SRC_INPUT_REG = "0" *) (* VERSION = "0" *) 
+(* XPM_MODULE = "TRUE" *) (* xpm_cdc = "SINGLE" *) 
 module system_auto_cc_0_xpm_cdc_single__2
    (src_clk,
     src_in,
@@ -3722,9 +3762,9 @@ module system_auto_cc_0_xpm_cdc_single__2
         .R(1'b0));
 endmodule
 
-(* DEST_SYNC_FF = "2" *) (* ORIG_REF_NAME = "xpm_cdc_single" *) (* SIM_ASSERT_CHK = "0" *) 
-(* SRC_INPUT_REG = "0" *) (* VERSION = "0" *) (* XPM_MODULE = "TRUE" *) 
-(* xpm_cdc = "SINGLE" *) 
+(* DEST_SYNC_FF = "2" *) (* INIT_SYNC_FF = "0" *) (* ORIG_REF_NAME = "xpm_cdc_single" *) 
+(* SIM_ASSERT_CHK = "0" *) (* SRC_INPUT_REG = "0" *) (* VERSION = "0" *) 
+(* XPM_MODULE = "TRUE" *) (* xpm_cdc = "SINGLE" *) 
 module system_auto_cc_0_xpm_cdc_single__3
    (src_clk,
     src_in,
@@ -3758,9 +3798,9 @@ module system_auto_cc_0_xpm_cdc_single__3
         .R(1'b0));
 endmodule
 
-(* DEST_SYNC_FF = "2" *) (* ORIG_REF_NAME = "xpm_cdc_single" *) (* SIM_ASSERT_CHK = "0" *) 
-(* SRC_INPUT_REG = "0" *) (* VERSION = "0" *) (* XPM_MODULE = "TRUE" *) 
-(* xpm_cdc = "SINGLE" *) 
+(* DEST_SYNC_FF = "2" *) (* INIT_SYNC_FF = "0" *) (* ORIG_REF_NAME = "xpm_cdc_single" *) 
+(* SIM_ASSERT_CHK = "0" *) (* SRC_INPUT_REG = "0" *) (* VERSION = "0" *) 
+(* XPM_MODULE = "TRUE" *) (* xpm_cdc = "SINGLE" *) 
 module system_auto_cc_0_xpm_cdc_single__4
    (src_clk,
     src_in,
@@ -3794,9 +3834,9 @@ module system_auto_cc_0_xpm_cdc_single__4
         .R(1'b0));
 endmodule
 
-(* DEST_SYNC_FF = "2" *) (* ORIG_REF_NAME = "xpm_cdc_single" *) (* SIM_ASSERT_CHK = "0" *) 
-(* SRC_INPUT_REG = "0" *) (* VERSION = "0" *) (* XPM_MODULE = "TRUE" *) 
-(* xpm_cdc = "SINGLE" *) 
+(* DEST_SYNC_FF = "2" *) (* INIT_SYNC_FF = "0" *) (* ORIG_REF_NAME = "xpm_cdc_single" *) 
+(* SIM_ASSERT_CHK = "0" *) (* SRC_INPUT_REG = "0" *) (* VERSION = "0" *) 
+(* XPM_MODULE = "TRUE" *) (* xpm_cdc = "SINGLE" *) 
 module system_auto_cc_0_xpm_cdc_single__5
    (src_clk,
     src_in,
@@ -3830,9 +3870,9 @@ module system_auto_cc_0_xpm_cdc_single__5
         .R(1'b0));
 endmodule
 
-(* DEST_SYNC_FF = "2" *) (* ORIG_REF_NAME = "xpm_cdc_single" *) (* SIM_ASSERT_CHK = "0" *) 
-(* SRC_INPUT_REG = "0" *) (* VERSION = "0" *) (* XPM_MODULE = "TRUE" *) 
-(* xpm_cdc = "SINGLE" *) 
+(* DEST_SYNC_FF = "2" *) (* INIT_SYNC_FF = "0" *) (* ORIG_REF_NAME = "xpm_cdc_single" *) 
+(* SIM_ASSERT_CHK = "0" *) (* SRC_INPUT_REG = "0" *) (* VERSION = "0" *) 
+(* XPM_MODULE = "TRUE" *) (* xpm_cdc = "SINGLE" *) 
 module system_auto_cc_0_xpm_cdc_single__6
    (src_clk,
     src_in,
@@ -3866,9 +3906,9 @@ module system_auto_cc_0_xpm_cdc_single__6
         .R(1'b0));
 endmodule
 
-(* DEST_SYNC_FF = "2" *) (* ORIG_REF_NAME = "xpm_cdc_single" *) (* SIM_ASSERT_CHK = "0" *) 
-(* SRC_INPUT_REG = "0" *) (* VERSION = "0" *) (* XPM_MODULE = "TRUE" *) 
-(* xpm_cdc = "SINGLE" *) 
+(* DEST_SYNC_FF = "2" *) (* INIT_SYNC_FF = "0" *) (* ORIG_REF_NAME = "xpm_cdc_single" *) 
+(* SIM_ASSERT_CHK = "0" *) (* SRC_INPUT_REG = "0" *) (* VERSION = "0" *) 
+(* XPM_MODULE = "TRUE" *) (* xpm_cdc = "SINGLE" *) 
 module system_auto_cc_0_xpm_cdc_single__7
    (src_clk,
     src_in,
@@ -3902,9 +3942,9 @@ module system_auto_cc_0_xpm_cdc_single__7
         .R(1'b0));
 endmodule
 
-(* DEST_SYNC_FF = "2" *) (* ORIG_REF_NAME = "xpm_cdc_single" *) (* SIM_ASSERT_CHK = "0" *) 
-(* SRC_INPUT_REG = "0" *) (* VERSION = "0" *) (* XPM_MODULE = "TRUE" *) 
-(* xpm_cdc = "SINGLE" *) 
+(* DEST_SYNC_FF = "2" *) (* INIT_SYNC_FF = "0" *) (* ORIG_REF_NAME = "xpm_cdc_single" *) 
+(* SIM_ASSERT_CHK = "0" *) (* SRC_INPUT_REG = "0" *) (* VERSION = "0" *) 
+(* XPM_MODULE = "TRUE" *) (* xpm_cdc = "SINGLE" *) 
 module system_auto_cc_0_xpm_cdc_single__8
    (src_clk,
     src_in,
@@ -3938,9 +3978,9 @@ module system_auto_cc_0_xpm_cdc_single__8
         .R(1'b0));
 endmodule
 
-(* DEST_SYNC_FF = "2" *) (* ORIG_REF_NAME = "xpm_cdc_single" *) (* SIM_ASSERT_CHK = "0" *) 
-(* SRC_INPUT_REG = "0" *) (* VERSION = "0" *) (* XPM_MODULE = "TRUE" *) 
-(* xpm_cdc = "SINGLE" *) 
+(* DEST_SYNC_FF = "2" *) (* INIT_SYNC_FF = "0" *) (* ORIG_REF_NAME = "xpm_cdc_single" *) 
+(* SIM_ASSERT_CHK = "0" *) (* SRC_INPUT_REG = "0" *) (* VERSION = "0" *) 
+(* XPM_MODULE = "TRUE" *) (* xpm_cdc = "SINGLE" *) 
 module system_auto_cc_0_xpm_cdc_single__9
    (src_clk,
     src_in,

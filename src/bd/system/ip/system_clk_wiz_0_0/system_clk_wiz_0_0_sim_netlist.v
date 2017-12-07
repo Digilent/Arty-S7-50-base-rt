@@ -1,10 +1,10 @@
 // Copyright 1986-2017 Xilinx, Inc. All Rights Reserved.
 // --------------------------------------------------------------------------------
-// Tool Version: Vivado v.2017.2.1 (win64) Build 1957588 Wed Aug  9 16:32:24 MDT 2017
-// Date        : Mon Aug 28 12:28:47 2017
-// Host        : WK73 running 64-bit Service Pack 1  (build 7601)
-// Command     : write_verilog -force -mode funcsim -rename_top system_clk_wiz_0_0 -prefix
-//               system_clk_wiz_0_0_ system_clk_wiz_0_0_sim_netlist.v
+// Tool Version: Vivado v.2017.3 (win64) Build 2018833 Wed Oct  4 19:58:22 MDT 2017
+// Date        : Wed Dec  6 21:09:57 2017
+// Host        : DESKTOP-9HMNAI5 running 64-bit major release  (build 9200)
+// Command     : write_verilog -force -mode funcsim
+//               C:/sam_work/git/digilent/Arty-S7-50-base-rt/src/bd/system/ip/system_clk_wiz_0_0/system_clk_wiz_0_0_sim_netlist.v
 // Design      : system_clk_wiz_0_0
 // Purpose     : This verilog netlist is a functional simulation representation of the design and should not be modified
 //               or synthesized. This netlist cannot be used for SDF annotated simulation.
@@ -35,6 +35,7 @@ module system_clk_wiz_0_0
         .resetn(resetn));
 endmodule
 
+(* ORIG_REF_NAME = "system_clk_wiz_0_0_clk_wiz" *) 
 module system_clk_wiz_0_0_system_clk_wiz_0_0_clk_wiz
    (clk_out1,
     resetn,
